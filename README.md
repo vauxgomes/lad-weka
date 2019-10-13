@@ -1,4 +1,4 @@
-# LAD-WEKA Project
+![](img/lad-weka-min.png)
 
 ### About LAD
 Logical Analysis of Data (LAD) is a rule-based machine learning algorithm based on ideas from Optimization and Boolean Function Theory. The LAD methodology was originally conceived by Peter L. Hammer, from Rutgers University, and has been described and developed in a number of papers since the late 80's. It has also been applied to classification problems arising in areas such as Medicine, Economics, and Bioinformatics. A list with representative publications about LAD will be made available here shortly.
