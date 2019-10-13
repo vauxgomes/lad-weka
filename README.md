@@ -12,14 +12,8 @@ The goal of the LAD-WEKA project is to provide a reference implementation of LAD
 
 #### Related publications
 
-**An Implementation of Logical Analysis of Data**.
-Boros, E., P.L. Hammer, T. Ibaraki, A. Kogan, E. Mayoraz, I. Muchnik.
-IEEE Transactions on Knowledge and Data Engineering, vol 12(2), 292-306, 2000
+**An Implementation of Logical Analysis of Data**. Boros, E., P.L. Hammer, T. Ibaraki, A. Kogan, E. Mayoraz, I. Muchnik. IEEE Transactions on Knowledge and Data Engineering, vol 12(2), 292-306, 2000
 
-**Maximum Patterns in Datasets**
-Bonates, T.O., P.L. Hammer, A. Kogan
-Discrete Applied Mathematics, vol. 156(6), 846-861, 2008.
+**Maximum Patterns in Datasets**. Bonates, T.O., P.L. Hammer, A. Kogan. Discrete Applied Mathematics, vol. 156(6), 846-861, 2008.
 
-**Classificação Supervisionada de Dados via Otimização e Funções Booleanas**
-Gomes, V.S.D., T. O. Bonates
-Anais do II Workshop Técnico-Científico de Computação, p.21-27, Mossoró, RN, Brazil, 2011.
+**Classificação Supervisionada de Dados via Otimização e Funções Booleanas**. Gomes, V.S.D., T. O. Bonates. Anais do II Workshop Técnico-Científico de Computação, p.21-27, Mossoró, RN, Brazil, 2011.
