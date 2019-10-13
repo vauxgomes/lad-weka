@@ -1,0 +1,47 @@
+# Eclipse Related Files
+.classpath
+.project
+bin/
+
+# Weka Related Files
+.classpath.default
+.project.default
+META-INF/
+build.xml
+build_orig.xml
+lib/
+parsers.xml
+pom.xml
+resources/
+
+# Ignore Rules for SRC
+src/*
+!src/main/
+
+src/main/*
+!src/main/java
+
+src/main/java/*
+!src/main/java/weka
+
+src/main/java/weka/*
+!src/main/java/weka/classifiers
+
+src/main/java/weka/classifiers/*
+!src/main/java/weka/classifiers/rules
+
+# LAD Files
+src/main/java/weka/classifiers/rules/*
+!src/main/java/weka/classifiers/rules/lad
+!src/main/java/weka/classifiers/rules/LAD.java
+
+# Property Files
+!src/main/java/weka/gui
+
+src/main/java/weka/gui/*
+!src/main/java/weka/gui/GenericPropertiesCreator.excludes
+!src/main/java/weka/gui/GenericObjectEditor.props
+!src/main/java/weka/gui/GenericPropertiesCreator.props
+!src/main/java/weka/gui/GUIEditors.props
+
+
