@@ -35,3 +35,8 @@ For the full LAD's list of options use the following command:
 ```sh
 $ java -classpath lad-weka.jar weka.classifiers.rules.LAD -help
 ```
+
+## Contact
+Please, direct any questions, comments, or suggestions to the e-mails provided below:
+ - ![](https://lia.ufc.br/~tiberius/lad/img/vmail.png)
+ - ![](https://lia.ufc.br/~tiberius/lad/img/tmail.png)
