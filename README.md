@@ -27,7 +27,7 @@ $ java -jar lad-weka.jar
 WEKA supports full CLI interaction. The following example calls LAD classifier with UCI's `vote` dataset.
 
 ```sh
-$ java -classpath weka.jar weka.classifiers.rules.LAD -t vote.arff -T vote.arff
+$ java -classpath lad-weka.jar weka.classifiers.rules.LAD -t vote.arff -T vote.arff
 ```
 
 #### LAD options
