@@ -35,8 +35,7 @@ import weka.core.Utils;
  * @since Mar 27, 2014
  * @version 1.0
  */
-public class LAD extends AbstractClassifier implements
-		TechnicalInformationHandler {
+public class LAD extends AbstractClassifier implements TechnicalInformationHandler {
 
 	/** SERIAL ID */
 	private static final long serialVersionUID = -7358699627342342455L;
@@ -59,32 +58,34 @@ public class LAD extends AbstractClassifier implements
 
 	@Override
 	/**
-	 * Generates the classifier. 
+	 * Generates the classifier.
+	 * 
 	 * @param instances set of instances serving as training data
-	 * @throws Exception if the classifier has not been generated
-	 * successfully
+	 * @throws Exception if the classifier has not been generated successfully
 	 */
 	public void buildClassifier(Instances data) throws Exception {
 
+		// Binarization
 		Binarization binarization = new Binarization(mCutpointTolerance);
-		mCutpoints = binarization.findCutpoints(data);
+		binarization.checkForExceptions();
+
+		mCutpoints = binarization.findCutpoints2(data);
 
 		BinaryData trainingData = new BinaryData(data, mCutpoints);
 
 		/*
-		 * If the separation level required is positive, we need to go through
-		 * the set covering phase.
+		 * If the separation level required is positive, we need to go through the set
+		 * covering phase.
 		 */
 
-		mFeatureSelection.checkForExceptions();
 		if (mFeatureSelection.getSeparationLevel() > 0) {
+			mFeatureSelection.checkForExceptions();
+			
 			try {
 				mFeatureSelection.findSelectedAtts(trainingData);
 				mCutpoints.narrowDown(mFeatureSelection.getSelectedAttArray());
 			} catch (OutOfMemoryError e) {
-				ERROR = "\n"
-						+ LADFileManager
-								.writeSection("Feature Selection: Out Of Memory Error");
+				ERROR = "\n" + LADFileManager.writeSection("Feature Selection: Out Of Memory Error");
 				ERROR += " It was impossible to build the set covering model due "
 						+ "the large number \n of cutpoints generated. Try "
 						+ "increasing the cutpoint tolerance or \n allocating "
@@ -102,9 +103,7 @@ public class LAD extends AbstractClassifier implements
 			this.mRuleGenerator.generateRules(trainingData);
 		} catch (OutOfMemoryError e) {
 			ERROR += (ERROR.length() > 0 ? "\n" : "");
-			ERROR += "\n"
-					+ LADFileManager
-							.writeSection("Rule Generation: Out Of Memory Error");
+			ERROR += "\n" + LADFileManager.writeSection("Rule Generation: Out Of Memory Error");
 			ERROR += " It was impossible to build the whole set of rules due memory "
 					+ "issues.\n All the rules that was possible to generate will be "
 					+ "used for the\n classification problem.";
@@ -131,8 +130,7 @@ public class LAD extends AbstractClassifier implements
 
 	@Override
 	/**
-	 * Calculates the class membership probabilities for the given test
-	 * instance.
+	 * Calculates the class membership probabilities for the given test instance.
 	 * 
 	 * @param instance the instance to be classified
 	 * @return predicted class probability distribution
@@ -155,8 +153,8 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/*
-	 * ------------------------------------------------------------------------
-	 * SETs & GETs
+	 * ------------------------------------------------------------------------ SETs
+	 * & GETs
 	 * ------------------------------------------------------------------------
 	 */
 
@@ -227,8 +225,8 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/*
-	 * --------------------------------------------------------------------
-	 * OTHERS DYSPLAY INFORMATIONS & TIP TEXTs
+	 * -------------------------------------------------------------------- OTHERS
+	 * DYSPLAY INFORMATIONS & TIP TEXTs
 	 * --------------------------------------------------------------------
 	 */
 
@@ -256,16 +254,14 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/*
-	 * --------------------------------------------------------------------
-	 * OPTION METHODS of CLASSIFIER
+	 * -------------------------------------------------------------------- OPTION
+	 * METHODS of CLASSIFIER
 	 * --------------------------------------------------------------------
 	 */
 
 	/**
-	 * @param options
-	 *            the list of options as an array of strings
-	 * @throws Exception
-	 *             if an option is not supported
+	 * @param options the list of options as an array of strings
+	 * @throws Exception if an option is not supported
 	 */
 	public void setOptions(String[] options) throws Exception {
 
@@ -278,15 +274,12 @@ public class LAD extends AbstractClassifier implements
 		// Looking for Feature Selection Level Option
 		String featureSelSeparationClassOption = Utils.getOption('F', options);
 		if (featureSelSeparationClassOption.length() != 0) {
-			String[] tmpOptions = Utils
-					.splitOptions(featureSelSeparationClassOption);
+			String[] tmpOptions = Utils.splitOptions(featureSelSeparationClassOption);
 
-			featureSelSeparationClassOption = FeatureSelection.class
-					.getPackage().getName() + "." + tmpOptions[0];
+			featureSelSeparationClassOption = FeatureSelection.class.getPackage().getName() + "." + tmpOptions[0];
 
-			setFeatureSelection((FeatureSelection) Utils.forName(
-					FeatureSelection.class, featureSelSeparationClassOption,
-					tmpOptions));
+			setFeatureSelection((FeatureSelection) Utils.forName(FeatureSelection.class,
+					featureSelSeparationClassOption, tmpOptions));
 
 			this.mFeatureSelection.setOptions(tmpOptions);
 		}
@@ -301,11 +294,9 @@ public class LAD extends AbstractClassifier implements
 		if (ruleGeneratiorClassOption.length() != 0) {
 			String[] tmpOptions = Utils.splitOptions(ruleGeneratiorClassOption);
 
-			ruleGeneratiorClassOption = RuleGenerator.class.getPackage()
-					.getName() + "." + tmpOptions[0];
+			ruleGeneratiorClassOption = RuleGenerator.class.getPackage().getName() + "." + tmpOptions[0];
 
-			setRuleGenerator((RuleGenerator) Utils.forName(RuleGenerator.class,
-					ruleGeneratiorClassOption, tmpOptions));
+			setRuleGenerator((RuleGenerator) Utils.forName(RuleGenerator.class, ruleGeneratiorClassOption, tmpOptions));
 
 			this.mRuleGenerator.setOptions(tmpOptions);
 		}
@@ -336,8 +327,8 @@ public class LAD extends AbstractClassifier implements
 		options.add("-P");
 		options.add("" + getMinimumPurity());
 		options.add("-G");
-		options.add("" + mRuleGenerator.getClass().getSimpleName() + " "
-				+ Utils.joinOptions(mRuleGenerator.getOptions()));
+		options.add(
+				"" + mRuleGenerator.getClass().getSimpleName() + " " + Utils.joinOptions(mRuleGenerator.getOptions()));
 
 		options.add("-A");
 		options.add("" + getPrintFile());
@@ -346,7 +337,7 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/** Returns an enumeration describing the available options. */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Enumeration listOptions() {
 
 		Vector<Option> newVector = new Vector<Option>();
@@ -355,34 +346,25 @@ public class LAD extends AbstractClassifier implements
 		while (classifierList.hasMoreElements())
 			newVector.addElement((Option) classifierList.nextElement());
 
-		newVector
-				.addElement(new Option(
-						"\tTolerance for cutpoint generation. A cutpoint will \n"
-								+ "\tonly be generated between two values if they differ by\n"
-								+ "\tat least this value. (Default = 0.0)\n",
-						"T", 1, "-T <tolerance>"));
+		newVector.addElement(new Option("\tTolerance for cutpoint generation. A cutpoint will \n"
+				+ "\tonly be generated between two values if they differ by\n"
+				+ "\tat least this value. (Default = 0.0)\n", "T", 1, "-T <tolerance>"));
 
 		newVector.addElement(new Option("\tFeature selection class.\n", "F", 1,
 				"-F <feature_separation_class_simple_name> + <options>"));
 
-		newVector
-				.addElement(new Option(
-						"\tMinimum purity requirement for rules. This is an upper\n"
-								+ "\tbound on the number of points from another class that\n"
-								+ "\tare covered by a rule (as a percentage of the total number\n"
-								+ "\tof points covered by the rule).\n", "P",
-						1, "-P <percentage>"));
+		newVector.addElement(new Option("\tMinimum purity requirement for rules. This is an upper\n"
+				+ "\tbound on the number of points from another class that\n"
+				+ "\tare covered by a rule (as a percentage of the total number\n"
+				+ "\tof points covered by the rule).\n", "P", 1, "-P <percentage>"));
+
+		newVector.addElement(new Option("\tThe algorithm used for generating classsification rules.\n", "G", 1,
+				"-G <rule_generator_class_name> + <options>"));
 
 		newVector.addElement(new Option(
-				"\tThe algorithm used for generating classsification rules.\n",
-				"G", 1, "-G <rule_generator_class_name> + <options>"));
-
-		newVector
-				.addElement(new Option(
-						"\tWhether or not a report file is saved in the default\n"
-								+ "\tdocument folder, containing a detailed description\n"
-								+ "\tof the LAD model produced.\n", "A", 1,
-						"-A <Boolean>"));
+				"\tWhether or not a report file is saved in the default\n"
+						+ "\tdocument folder, containing a detailed description\n" + "\tof the LAD model produced.\n",
+				"A", 1, "-A <Boolean>"));
 
 		Enumeration featureSelection = this.mFeatureSelection.listOptions();
 		while (featureSelection.hasMoreElements())
@@ -435,17 +417,14 @@ public class LAD extends AbstractClassifier implements
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
 		result.setValue(Field.AUTHOR, "V.S.D. Gomes and T.O. Bonates");
 		result.setValue(Field.YEAR, "2011");
-		result.setValue(
-				Field.TITLE,
+		result.setValue(Field.TITLE,
 				"Classificacao Supervisionada de Dados via Otimizacao e Funcoes Booleanas (in Portuguese)");
-		result.setValue(Field.BOOKTITLE,
-				"Anais do II Workshop Tecnico-Cientifico de Computacao");
+		result.setValue(Field.BOOKTITLE, "Anais do II Workshop Tecnico-Cientifico de Computacao");
 		result.setValue(Field.ADDRESS, "Mossoro, Brazil");
 		result.setValue(Field.PAGES, "21-27");
 
 		additional = result.add(Type.ARTICLE);
-		additional.setValue(Field.AUTHOR,
-				"T.O. Bonates, P.L. Hammer and A. Kogan");
+		additional.setValue(Field.AUTHOR, "T.O. Bonates, P.L. Hammer and A. Kogan");
 		additional.setValue(Field.YEAR, "2008");
 		additional.setValue(Field.TITLE, "Maximum Patterns in Datasets");
 		additional.setValue(Field.JOURNAL, "Discrete Applied Mathematics");
@@ -453,14 +432,10 @@ public class LAD extends AbstractClassifier implements
 		additional.setValue(Field.PAGES, "846-861");
 
 		additional = result.add(Type.ARTICLE);
-		additional
-				.setValue(Field.AUTHOR,
-						"E. Boros, P.L. Hammer, T. Ibaraki, A. Kogan, E. Mayoraz and I. Muchnik");
+		additional.setValue(Field.AUTHOR, "E. Boros, P.L. Hammer, T. Ibaraki, A. Kogan, E. Mayoraz and I. Muchnik");
 		additional.setValue(Field.YEAR, "2000");
-		additional.setValue(Field.TITLE,
-				"An Implementation of Logical Analysis of Data");
-		additional.setValue(Field.JOURNAL,
-				"IEEE Transactions on Knowledge and Data Engineering");
+		additional.setValue(Field.TITLE, "An Implementation of Logical Analysis of Data");
+		additional.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
 		additional.setValue(Field.VOLUME, "12");
 		additional.setValue(Field.PAGES, "292-306");
 
@@ -468,8 +443,8 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/*
-	 * --------------------------------------------------------------------
-	 * PRINT FUNCTIONS
+	 * -------------------------------------------------------------------- PRINT
+	 * FUNCTIONS
 	 * --------------------------------------------------------------------
 	 */
 
@@ -486,8 +461,7 @@ public class LAD extends AbstractClassifier implements
 	}
 
 	/*
-	 * ------------------------------------------------------------------------
-	 * MAIN
+	 * ------------------------------------------------------------------------ MAIN
 	 * ------------------------------------------------------------------------
 	 */
 
