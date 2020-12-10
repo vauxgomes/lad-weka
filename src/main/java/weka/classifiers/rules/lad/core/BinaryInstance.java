@@ -62,8 +62,8 @@ public class BinaryInstance implements Serializable {
 	}
 
 	/** GET of the binary instance class */
-	public boolean instanceClass() {
-		return mInstance.classValue() == 0;
+	public double instanceClass() {
+		return mInstance.classValue();
 	}
 
 	/** GET of number of attributes */

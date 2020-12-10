@@ -22,9 +22,8 @@ public class BinaryData implements Serializable {
 	private static final long serialVersionUID = 2488234257854645289L;
 
 	/* Variables */
-	private ArrayList<BinaryInstance> mbIArrayPositive;
-	private ArrayList<BinaryInstance> mbIArrayNegative;
-	private Cutpoints sCutpoints;
+	private ArrayList<BinaryInstance> mInstances;
+	private int mNumAttributes;
 
 	/** Main Constructor */
 	public BinaryData(Instances data, Cutpoints cutpoints) {
@@ -33,117 +32,42 @@ public class BinaryData implements Serializable {
 		for (Instance instance : data)
 			addInstance(new BinaryInstance(instance, cutpoints));
 
-		this.sCutpoints = cutpoints;
+		this.mNumAttributes = cutpoints.numCutpoints();
 	}
 
 	/** Basic Constructor */
 	public BinaryData() {
-		mbIArrayPositive = new ArrayList<BinaryInstance>();
-		mbIArrayNegative = new ArrayList<BinaryInstance>();
+		mInstances = new ArrayList<BinaryInstance>();
 	}
 
 	/** Smart Constructor */
-	public BinaryData(BinaryData bInsts) {
+	public BinaryData(BinaryData data) {
 		this();
-
-		for (BinaryInstance bInst : bInsts.mbIArrayPositive)
-			addInstance(bInst);
-		for (BinaryInstance bInst : bInsts.mbIArrayNegative)
-			addInstance(bInst);
+		this.mInstances = new ArrayList<BinaryInstance>(data.mInstances);
 	}
 
 	/** Adds a new instance */
-	public void addInstance(BinaryInstance bInst) {
-		if (bInst == null)
-			return;
-
-		if (bInst.instanceClass()) {
-			mbIArrayPositive.add(bInst);
-		} else {
-			mbIArrayNegative.add(bInst);
-		}
+	public void addInstance(BinaryInstance instance) {
+		this.mInstances.add(instance);
 	}
 
 	/** Removes an instance */
-	public void removeInstance(BinaryInstance bInst) {
-		if (bInst.instanceClass()) {
-			mbIArrayPositive.remove(bInst);
-		} else {
-			mbIArrayNegative.remove(bInst);
-		}
+	public void removeInstance(BinaryInstance instance) {
+		mInstances.remove(instance);
 	}
 
-	/**
-	 * GET of a specific instance. The first n indexes return a positive
-	 * instance, the m indexes left return a negative instance.
-	 */
+	/** GET of a specific instance. */
 	public BinaryInstance getInstance(int index) {
-		if (index < mbIArrayPositive.size())
-			return mbIArrayPositive.get(index);
-		else
-			return mbIArrayNegative.get(index - mbIArrayPositive.size());
-	}
-
-	/** GET of a positive instance */
-	public BinaryInstance getPositiveInstance(int index) {
-		return mbIArrayPositive.get(index);
-	}
-
-	/** GET of a negative instance */
-	public BinaryInstance getNegativeInstance(int index) {
-		return mbIArrayNegative.get(index);
-	}
-
-	/** GET of all positive instances */
-	public final ArrayList<BinaryInstance> getPositiveInstances() {
-		return mbIArrayPositive;
-	}
-
-	/** GET of all negative instances */
-	public final ArrayList<BinaryInstance> getNegativeInstances() {
-		return mbIArrayNegative;
+		return mInstances.get(index);
 	}
 
 	/** GET of number of instances */
 	public int numInstances() {
-		return numPositiveInstances() + numNegativeInstances();
+		return mInstances.size();
 	}
-
-	/** GET of number of positive instances */
-	public int numPositiveInstances() {
-		return mbIArrayPositive.size();
-	}
-
-	/** GET of number of negative instances */
-	public int numNegativeInstances() {
-		return mbIArrayNegative.size();
-	}
-
-	/** GET of number of binary attributes */
+	
+	/** GET of number of attributes */
 	public int numAttributes() {
-		return sCutpoints.numCutpoints();
-	}
-
-//	public boolean isNumeric(int index) {
-//		if (mbIArrayPositive.size() > 0)
-//			return mbIArrayPositive.get(0).isNumeric(index);
-//		else if (mbIArrayNegative.size() > 0)
-//			return mbIArrayNegative.get(0).isNumeric(index);
-//		else
-//			System.err.println("Both Negative and Positive BInsts are empty!");
-//		
-//		return false;
-//	}
-
-	@Override
-	public String toString() {
-		String s = "";
-		for (BinaryInstance b : mbIArrayPositive)
-			s += b + "\n";
-
-		for (BinaryInstance b : mbIArrayNegative)
-			s += b + "\n";
-
-		return s;
+		return mNumAttributes;
 	}
 }
