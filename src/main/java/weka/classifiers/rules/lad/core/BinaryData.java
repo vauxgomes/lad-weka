@@ -96,6 +96,11 @@ public class BinaryData implements Serializable {
 	public int numInstances() {
 		return mInstances.size();
 	}
+	
+	/** GET of number of by class label */
+	public int numInstances(double label) {
+		return this.mLabelsCount.containsKey(label) ? this.mLabelsCount.get(label) : 0;
+	}
 
 	/** GET of number of attributes */
 	public int numAttributes() {
