@@ -15,10 +15,10 @@
 ShowGlobalInfoToolTip=true
 
 # LAD classifier
-weka.classifiers.rules.lad.ruleGenerators.RuleGenerator=weka.gui.GenericObjectEditor
-weka.classifiers.rules.lad.ruleGenerators.RuleGenerator[]=weka.gui.GenericArrayEditor
-weka.classifiers.rules.lad.cutpointSelection.FeatureSelection=weka.gui.GenericObjectEditor
-weka.classifiers.rules.lad.cutpointSelection.FeatureSelection[]=weka.gui.GenericArrayEditor
+weka.classifiers.rules.lad.rulegeneration.RuleGenerator=weka.gui.GenericObjectEditor
+weka.classifiers.rules.lad.rulegeneration.RuleGenerator[]=weka.gui.GenericArrayEditor
+weka.classifiers.rules.lad.featureselection.FeatureSelection=weka.gui.GenericObjectEditor
+weka.classifiers.rules.lad.featureselection.FeatureSelection[]=weka.gui.GenericArrayEditor
 
 # general
 java.lang.Object[]=weka.gui.GenericArrayEditor

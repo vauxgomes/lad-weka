@@ -245,14 +245,14 @@ weka.classifiers.Classifier=\
  weka.classifiers.rules.ZeroR
  
 # LAD - Lists the RuleGenerators I Want to Choose From
-weka.classifiers.rules.lad.ruleGenerators.RuleGenerator=\
- weka.classifiers.rules.lad.ruleGenerators.RandomRuleGenerator,\
- weka.classifiers.rules.lad.ruleGenerators.MaxRuleGenerator
+weka.classifiers.rules.lad.rulegeneration.RuleGenerator=\
+ weka.classifiers.rules.lad.rulegeneration.RandomRuleGenerator,\
+ weka.classifiers.rules.lad.rulegeneration.MaxRuleGenerator
  
 # LAD - List the FeatureSelection I Want to Choose From
-weka.classifiers.rules.lad.cutpointSelection.FeatureSelection=\
- weka.classifiers.rules.lad.cutpointSelection.GreedySetCover,\
- weka.classifiers.rules.lad.cutpointSelection.IteratedSampling
+weka.classifiers.rules.lad.featureselection.FeatureSelection=\
+ weka.classifiers.rules.lad.featureselection.GreedySetCover,\
+ weka.classifiers.rules.lad.featureselection.IteratedSampling
 
 # Lists the AbstractOutput classes I want to choose from
 weka.classifiers.evaluation.output.prediction.AbstractOutput=\
