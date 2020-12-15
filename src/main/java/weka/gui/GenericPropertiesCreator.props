@@ -34,11 +34,11 @@ weka.classifiers.Classifier=\
  
 # LAD - Lists of RuleGenerators directory I want to choose from
 weka.classifiers.rules.lad.rulegeneration.RuleGenerator=\
- weka.classifiers.rules.lad.ruleGenerators
+ weka.classifiers.rules.lad.rulegeneration
 
 # LAD - List the FeatureSelection directory I want to choose from
 weka.classifiers.rules.lad.featureselection.FeatureSelection=\
- weka.classifiers.rules.lad.cutpointSelection
+ weka.classifiers.rules.lad.featureselection
 
 # Lists the IterativeClassifier objects I want to choose from
 weka.classifiers.IterativeClassifier=\

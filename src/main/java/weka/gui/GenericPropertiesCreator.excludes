@@ -30,5 +30,5 @@ weka.classifiers.functions.supportVector.RegOptimizer=\
  C:weka.classifiers.functions.supportVector.RegOptimizer
 
 # LAD rule generator
-#weka.classifiers.rules.lad.ruleGenerators.RuleGenerator=\
-# C:weka.classifiers.rules.lad.ruleGenerators.MaxRuleGenerator
+#weka.classifiers.rules.lad.rulegeneration.RuleGenerator=\
+# C:weka.classifiers.rules.lad.rulegeneration.MaxRuleGenerator
