@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import weka.classifiers.rules.lad.binarization.Cutpoints;
+import weka.classifiers.rules.lad.binarization.CutpointSet;
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -24,67 +25,65 @@ public class BinaryData implements Serializable {
 
 	/* Variables */
 	private ArrayList<BinaryInstance> mInstances;
-	private HashMap<Double, Integer> mLabelsCount;
+	private ArrayList<Attribute> mAttributes;
+	private HashMap<Double, Integer> mCounts;
 
 	private int mNumAttributes;
-	private boolean mSafetyFlag;
 
 	/** Main Constructor */
-	public BinaryData(Instances data, Cutpoints cutpoints) {
-		this();
+	public BinaryData(Instances data, CutpointSet cutpoints) {
+		this(data.numClasses());
 
 		for (Instance instance : data)
-			addInstance(new BinaryInstance(instance, cutpoints));
+			add(new BinaryInstance(instance, cutpoints));
 
-		for (int i = 0; i < data.numClasses(); i++)
-			this.mLabelsCount.put((double) i, 0);
-
+		for (int i = 0; i < data.numAttributes(); i++)
+			mAttributes.add(data.attribute(i));
+		
 		this.mNumAttributes = cutpoints.numCutpoints();
-		this.mSafetyFlag = false;
 	}
 
 	/** Basic Constructor */
-	public BinaryData() {
-		this.mInstances = new ArrayList<BinaryInstance>();
-		this.mLabelsCount = new HashMap<Double, Integer>();
+	public BinaryData(int numLabels) {
+		mInstances = new ArrayList<BinaryInstance>();
+		mCounts = new HashMap<Double, Integer>();
+		mAttributes = new ArrayList<Attribute>();
+		mNumAttributes = 0;
 
-		this.mNumAttributes = 0;
-		this.mSafetyFlag = true;
+		for (int i = 0; i < numLabels; i++)
+			mCounts.put((double) i, 0);
 	}
 
 	/** Smart Constructor */
 	public BinaryData(BinaryData data) {
-		this();
+		mInstances = new ArrayList<BinaryInstance>(data.mInstances);
+		mAttributes = new ArrayList<Attribute>(data.mAttributes);
+		mCounts = new HashMap<Double, Integer>(data.mCounts);
 
-		this.mInstances = new ArrayList<BinaryInstance>(data.mInstances);
-		this.mLabelsCount = new HashMap<Double, Integer>(data.mLabelsCount);
-
-		this.mNumAttributes = data.mNumAttributes;
-		this.mSafetyFlag = true;
+		mNumAttributes = data.mNumAttributes;
 	}
 
-	/** Adds a new instance */
-	public void addInstance(BinaryInstance instance) {
-		this.mInstances.add(instance);
+	/** Adds an instance */
+	public void add(BinaryInstance instance) {
+		if (this.mInstances.add(instance))
+			mCounts.put(instance.instanceClass(), mCounts.get(instance.instanceClass()) + 1);
+	}
 
-		if (this.mSafetyFlag) {
-			double label = instance.instanceClass();
-			int count = (this.mLabelsCount.containsKey(label) ? this.mLabelsCount.get(label) : 0) + 1;
-
-			this.mLabelsCount.put(label, count);
-		}
+	/** Adds all instances from a BinaryData */
+	public void add(BinaryData data) {
+		for (BinaryInstance instance : data.mInstances)
+			add(instance);
 	}
 
 	/** Removes an instance */
-	public void removeInstance(BinaryInstance instance) {
-		mInstances.remove(instance);
-
-		if (this.mSafetyFlag) {
-			double label = instance.instanceClass();
-			int count = (this.mLabelsCount.containsKey(label) ? this.mLabelsCount.get(label) - 1 : 0);
-
-			this.mLabelsCount.put(label, count);
-		}
+	public void remove(BinaryInstance instance) {
+		if (mInstances.remove(instance))
+			mCounts.put(instance.instanceClass(), mCounts.get(instance.instanceClass()) - 1);
+	}
+	
+	public void remove(BinaryData data) {
+		for (BinaryInstance instance : data.mInstances)
+			remove(instance);		
 	}
 
 	/** GET of a specific instance. */
@@ -92,18 +91,58 @@ public class BinaryData implements Serializable {
 		return mInstances.get(index);
 	}
 
+	/** GET of a instances. */
+	public ArrayList<BinaryInstance> getInstances() {
+		return mInstances;
+	}
+
 	/** GET of number of instances */
 	public int numInstances() {
 		return mInstances.size();
-	}
-	
-	/** GET of number of by class label */
-	public int numInstances(double label) {
-		return this.mLabelsCount.containsKey(label) ? this.mLabelsCount.get(label) : 0;
 	}
 
 	/** GET of number of attributes */
 	public int numAttributes() {
 		return mNumAttributes;
+	}
+
+	/** GET of number of class labels */
+	public int numClassLabels() {
+		return mCounts.size();
+	}
+
+	/** Check if attribute is Numeric */
+	public Attribute getAttribute(int index) {
+		return mAttributes.get(index);
+	}
+
+	/** Stats: Purity */
+	public double getPurity(double label) {
+		return mInstances.size() == 0 ? 0 : (mCounts.get(label) / (double) mInstances.size());
+	}
+
+	/** Stats: Merged purity */
+	public double getMergedPurity(BinaryData data, double label) {
+		return (mInstances.size() + data.mInstances.size()) == 0 ? 0
+				: (mCounts.get(label) + data.mCounts.get(label)) / (double) (mInstances.size() + data.mInstances.size());
+	}
+
+	/** Stats: Coverage */
+	public int getCoverage(double label) {
+		return mCounts.get(label);
+	}
+	
+	public double getMergedCoverage(BinaryData data, double label) {
+		return getCoverage(label) + data.getCoverage(label);
+	}
+	
+	@Override
+	public String toString() {
+		String s = String.format("Covered: %d\n", mInstances.size());
+		for (int i = 0; i < mCounts.size(); i++) {
+			s+= String.format("[%d] (%f, %d)\n", i, getPurity(i), getCoverage(i));
+		}
+		
+		return s; 
 	}
 }

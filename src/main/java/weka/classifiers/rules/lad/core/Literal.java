@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author Tiberius Bonates
  * 
  * @since Mar 27, 2014
- * @version 1.0
+ * @version 1.1
  */
 public class Literal implements Serializable {
 
@@ -38,6 +38,12 @@ public class Literal implements Serializable {
 		this.mNumericInfo = false;
 	}
 
+	/** Compares values between this Literal and the related Instance attribute */
+	public boolean isIn(BinaryInstance instance) {
+		return (isNumeric() && instance.getBinAt(mAtt) == getSignal())
+				|| (!isNumeric() && instance.getValueAt(mAtt) == getValue());
+	}
+
 	/** GET of attribute index */
 	public int getAtt() {
 		return mAtt;
@@ -60,8 +66,6 @@ public class Literal implements Serializable {
 
 	@Override
 	public String toString() {
-		return "("
-				+ (isNumeric() ? (getSignal() ? "+" : "-") + mAtt : "Att" + mAtt + " = "
-						+ (int) getValue()) + ")";
+		return "(" + (isNumeric() ? (getSignal() ? "+" : "-") + mAtt : "Att" + mAtt + " = " + (int) getValue()) + ")";
 	}
 }

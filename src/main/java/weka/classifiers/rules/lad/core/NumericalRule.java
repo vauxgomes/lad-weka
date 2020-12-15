@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import weka.classifiers.rules.lad.binarization.Cutpoints;
+import weka.classifiers.rules.lad.binarization.CutpointSet;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -24,7 +24,7 @@ public class NumericalRule implements Serializable {
 	private static final long serialVersionUID = 7849846023533714647L;
 
 	/* Variables */
-	private boolean mClass;
+	private int mLabel;
 	private double mPurity;
 	private double mWeight;
 
@@ -32,8 +32,8 @@ public class NumericalRule implements Serializable {
 	private ArrayList<NumericalCondition> mConditions;
 
 	/** Main Constructor */
-	public NumericalRule(final BinaryRule bRule, final Cutpoints cutpoints) {
-		this.mClass = bRule.getRuleClass();
+	public NumericalRule(final BinaryRule bRule, final CutpointSet cutpoints) {
+		this.mLabel = bRule.getLabel();
 		this.mWeight = 0.0;
 		this.mConditions = new ArrayList<NumericalCondition>();
 		this.mPurity = bRule.getPurity();
@@ -82,15 +82,10 @@ public class NumericalRule implements Serializable {
 	public double getPurity() {
 		return mPurity;
 	}
-
-	/** True if it is positive */
-	public boolean isPositive() {
-		return this.mClass;
-	}
-
-	/** True if it is negative */
-	public boolean isNegative() {
-		return !this.mClass;
+	
+	/** GET of class Label */
+	public int getLabel() {
+		return mLabel;
 	}
 
 	/** GET of rule's weights */
@@ -128,7 +123,7 @@ public class NumericalRule implements Serializable {
 			int att = nCond.mAtt;
 
 			if (att < 0 || att >= inst.numAttributes() - 1) {
-				System.out.println("Quem já viu?");
+				System.out.println("Quem jï¿½ viu?");
 				return false;
 			}
 
@@ -156,7 +151,7 @@ public class NumericalRule implements Serializable {
 	@Override
 	public boolean equals(Object o) {
 		NumericalRule nRule = (NumericalRule) o;
-		if (this.mClass != nRule.mClass
+		if (this.mLabel != nRule.mLabel
 				|| this.mConditions.size() != nRule.mConditions.size())
 			return false;
 

@@ -1,19 +1,24 @@
 package weka.classifiers.rules;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
+
+import org.apache.commons.compress.utils.Sets;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.rules.lad.binarization.Binarization;
-import weka.classifiers.rules.lad.binarization.Cutpoints;
+import weka.classifiers.rules.lad.binarization.CutpointSet;
 import weka.classifiers.rules.lad.core.BinaryData;
 import weka.classifiers.rules.lad.core.BinaryRule;
 import weka.classifiers.rules.lad.core.NumericalRule;
-import weka.classifiers.rules.lad.cutpointSelection.FeatureSelection;
-import weka.classifiers.rules.lad.cutpointSelection.IteratedSampling;
-import weka.classifiers.rules.lad.ruleGenerators.RandomRuleGenerator;
-import weka.classifiers.rules.lad.ruleGenerators.RuleGenerator;
-import weka.classifiers.rules.lad.ruleManager.RuleManager;
+import weka.classifiers.rules.lad.featureselection.FeatureSelection;
+import weka.classifiers.rules.lad.featureselection.IteratedSampling;
+import weka.classifiers.rules.lad.rulegeneration.RandomRuleGenerator;
+import weka.classifiers.rules.lad.rulegeneration.RuleGenerator;
+import weka.classifiers.rules.lad.rulegeneration.RuleManager;
 import weka.classifiers.rules.lad.util.LADFileManager;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
@@ -27,33 +32,70 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
- * Class Logical Analysis Data (LAD)
+ * <p>
+ * Logical Analysis of Data (LAD) is a rule-based machine learning algorithm
+ * based on ideas from Optimization and Boolean Function Theory.
+ * </p>
+ * 
+ * <p>
+ * The LAD methodology was originally conceived by Peter L. Hammer, from Rutgers
+ * University, and has been described and developed in a number of papers since
+ * the late 80's. It has also been applied to classification problems arising in
+ * areas such as Medicine, Economics, and Bioinformatics.
+ * </p>
+ * 
+ * BibTeX:
+ * 
+ * <pre>
+ * &#64;article{boros2000implementation,
+ *    title = {An implementation of logical analysis of data},
+ *    author = {Boros, Endre and Hammer, Peter L and Ibaraki, Toshihide and Kogan, Alexander and Mayoraz, Eddy and Muchnik, Ilya},
+ *    journal = {IEEE Transactions on knowledge and Data Engineering},
+ *    volume = {12},
+ *    number = {2},
+ *    pages = {292--306},
+ *    year = {2000},
+ *    publisher = {IEEE}
+ * }
+ * 
+ * &#64;article{bonates2008maximum,
+ *    title={Maximum patterns in datasets},
+ *    author={Bonates, Tib{\'e}rius O and Hammer, Peter L and Kogan, Alexander},
+ *    journal={Discrete Applied Mathematics},
+ *    volume={156},
+ *    number={6},
+ *    pages={846--861},
+ *    year={2008},
+ *    publisher={Elsevier}
+ * }
+ * 
+ * </pre>
  * 
  * @author Vaux Gomes
  * @author Tiberius Bonates
  * 
  * @since Mar 27, 2014
- * @version 1.0
+ * @version 1.1
+ * 
+ * @apiNote Updated to the multiclass on Dec 15, 2020
  */
 public class LAD extends AbstractClassifier implements TechnicalInformationHandler {
 
 	/** SERIAL ID */
 	private static final long serialVersionUID = -7358699627342342455L;
 
-	/* Parameters [INITIAL STATES] */
+	/* Hyperparameters */
 	private double mCutpointTolerance = 0.0;
-	private double mMinimumPurity = 0.95;
-	private boolean mPrintFile = false;
+	private double mMinimumPurity = 0.85;
 
 	private FeatureSelection mFeatureSelection = new IteratedSampling();
 	private RuleGenerator mRuleGenerator = new RandomRuleGenerator();
 
 	/* Variables */
-	private Cutpoints mCutpoints = null;
+	private CutpointSet mCutpoints = null;
 	private RuleManager mRuleManager = null;
 
 	/* Auxiliary */
-	private LADFileManager mFileManager;
 	private String ERROR = "";
 
 	@Override
@@ -69,9 +111,8 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 		Binarization binarization = new Binarization(mCutpointTolerance);
 		binarization.checkForExceptions();
 
-		mCutpoints = binarization.findCutpoints2(data);
-
-		BinaryData trainingData = new BinaryData(data, mCutpoints);
+		mCutpoints = binarization.fit(data);
+		BinaryData bData = new BinaryData(data, mCutpoints);
 
 		/*
 		 * If the separation level required is positive, we need to go through the set
@@ -80,16 +121,16 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 
 		if (mFeatureSelection.getSeparationLevel() > 0) {
 			mFeatureSelection.checkForExceptions();
-			
+
 			try {
-				mFeatureSelection.findSelectedAtts(trainingData);
+				mFeatureSelection.fit(bData);
 				mCutpoints.narrowDown(mFeatureSelection.getSelectedAttArray());
 			} catch (OutOfMemoryError e) {
 				ERROR = "\n" + LADFileManager.writeSection("Feature Selection: Out Of Memory Error");
 				ERROR += " It was impossible to build the set covering model due "
-						+ "the large number \n of cutpoints generated. Try "
-						+ "increasing the cutpoint tolerance or \n allocating "
-						+ "more memory to the JVM at startup.\n";
+						+ "the large number\n of cutpoints generated. Try "
+						+ "increasing the cutpoint tolerance or\n allocating "
+						+ "more memory to the JVM when starting WEKA.\n";
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -100,7 +141,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 		this.mRuleGenerator.checkForExceptions();
 
 		try {
-			this.mRuleGenerator.generateRules(trainingData);
+			this.mRuleGenerator.fit(bData);
 		} catch (OutOfMemoryError e) {
 			ERROR += (ERROR.length() > 0 ? "\n" : "");
 			ERROR += "\n" + LADFileManager.writeSection("Rule Generation: Out Of Memory Error");
@@ -114,17 +155,10 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 			// Setting Rules
 			this.mRuleManager = new RuleManager(data);
 
-			for (BinaryRule bRule : mRuleGenerator.getRules())
-				mRuleManager.addRule(new NumericalRule(bRule, mCutpoints));
+			for (BinaryRule rule : mRuleGenerator.getRules())
+				mRuleManager.add(new NumericalRule(rule, mCutpoints));
 
 			mRuleManager.adjustRulesWeight(data);
-
-			// Writing on the file
-			if (mPrintFile) {
-				mFileManager = new LADFileManager(data.relationName(), true);
-				mFileManager.write(this, data.relationName());
-				mFileManager.close();
-			}
 		}
 	}
 
@@ -137,29 +171,17 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	 * @throws Exception if there is a problem generating the prediction
 	 */
 	public double[] distributionForInstance(Instance instance) throws Exception {
-		double[] distribution;
-
-		if (mPrintFile) {
-			distribution = mRuleManager.distributionForInstancePSR(instance);
-
-			mFileManager.restore();
-			mFileManager.write(mRuleManager.getLatestRepresentation());
-			mFileManager.close();
-		} else {
-			distribution = mRuleManager.distributionForInstance(instance);
-		}
-
-		return distribution;
+		return mRuleManager.distributionForInstance(instance);
 	}
 
 	/*
-	 * ------------------------------------------------------------------------ SETs
-	 * & GETs
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
+	 * SETs & GETs
+	 * -------------------------------------------------------------------------
 	 */
 
 	/** GET of Cut Points */
-	public Cutpoints getCutpoints() {
+	public CutpointSet getCutpoints() {
 		return mCutpoints;
 	}
 
@@ -169,9 +191,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 * DYSPLAY SETs & GETs
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 */
 
 	/** GET of cutPointTolerance to Display */
@@ -192,16 +214,6 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	/** SET of minumumPurity to Display */
 	public void setMinimumPurity(double purity) {
 		mMinimumPurity = purity;
-	}
-
-	/** GET of PrintFile to Display */
-	public boolean getPrintFile() {
-		return mPrintFile;
-	}
-
-	/** SET of PrintFile to Display */
-	public void setPrintFile(boolean mPrintFile) {
-		this.mPrintFile = mPrintFile;
 	}
 
 	/** SET of FeatureSelection Algorithm to Display */
@@ -225,9 +237,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * -------------------------------------------------------------------- OTHERS
-	 * DYSPLAY INFORMATIONS & TIP TEXTs
-	 * --------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
+	 * OTHERS DYSPLAY INFORMATIONS & TIP TEXTs
+	 * -------------------------------------------------------------------------
 	 */
 
 	/** Resumo sobre o algoritmo */
@@ -254,9 +266,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * -------------------------------------------------------------------- OPTION
-	 * METHODS of CLASSIFIER
-	 * --------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
+	 * OPTION METHODS of CLASSIFIER
+	 * -------------------------------------------------------------------------
 	 */
 
 	/**
@@ -301,12 +313,6 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 			this.mRuleGenerator.setOptions(tmpOptions);
 		}
 
-		// Looking for print file option
-		String printFileOption = Utils.getOption('A', options);
-		if (printFileOption.length() != 0) {
-			setPrintFile(Boolean.parseBoolean(printFileOption));
-		}
-
 		super.setOptions(options);
 	}
 
@@ -329,9 +335,6 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 		options.add("-G");
 		options.add(
 				"" + mRuleGenerator.getClass().getSimpleName() + " " + Utils.joinOptions(mRuleGenerator.getOptions()));
-
-		options.add("-A");
-		options.add("" + getPrintFile());
 
 		return (String[]) options.toArray(new String[options.size()]);
 	}
@@ -378,9 +381,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 * CAPACIDADES
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 */
 
 	@Override
@@ -405,9 +408,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 * INFORMACOES TECNICAS
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
 	 */
 
 	@Override
@@ -443,9 +446,9 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * -------------------------------------------------------------------- PRINT
-	 * FUNCTIONS
-	 * --------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
+	 * PRINT FUNCTIONS
+	 * -------------------------------------------------------------------------
 	 */
 
 	@Override
@@ -461,12 +464,29 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	}
 
 	/*
-	 * ------------------------------------------------------------------------ MAIN
-	 * ------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------
+	 * MAIN
+	 * -------------------------------------------------------------------------
 	 */
 
 	public static void main(String args[]) throws Exception {
 		// Running the classifier from set options
-		runClassifier(new LAD(), args);
+		// runClassifier(new LAD(), args);
+
+		Random rnd = new Random();
+		HashMap<Double, Set<Integer>> map = new HashMap<Double, Set<Integer>>();
+
+		for (int i = 0; i < 40; i++) {
+			double v = (int) (rnd.nextDouble() * 10);
+
+			int j = rnd.nextInt(100);
+
+			if (!map.containsKey(v))
+				map.put(v, Sets.newHashSet());
+
+			map.get(v).add(j);
+		}
+
+		System.out.println(map);
 	}
 }

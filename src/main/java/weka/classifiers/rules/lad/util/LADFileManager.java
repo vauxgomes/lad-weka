@@ -11,8 +11,8 @@ import java.util.Date;
 import javax.swing.JFileChooser;
 
 import weka.classifiers.rules.LAD;
-import weka.classifiers.rules.lad.binarization.Cutpoints;
-import weka.classifiers.rules.lad.ruleManager.RuleManager;
+import weka.classifiers.rules.lad.binarization.CutpointSet;
+import weka.classifiers.rules.lad.rulegeneration.RuleManager;
 import weka.core.Utils;
 
 /**
@@ -118,24 +118,24 @@ public class LADFileManager implements Serializable {
 			write(write(lad.getCutpoints(), true));
 
 			// Rules
-			write(write(lad.getRuleManager(), true));
+			write(write(lad.getRuleManager()));
 
-			// Patter-space section
-			write(writeHeader("Pattern-space representation of test set"));
-
-			// Printing ARFF model
-			write("@RELATION " + dataName + "_PS\n");
-
-			int numRules = lad.getRuleManager().numPositiveRules();
-			for (int i = 0; i < numRules; i++)
-				write("@ATTRIBUTE P" + (i + 1) + " NUMERIC");
-
-			numRules = lad.getRuleManager().numNegativeRules();
-			for (int i = 0; i < numRules; i++)
-				write("@ATTRIBUTE N" + (i + 1) + " NUMERIC");
-
-			write("@ATTRIBUTE class {0,1}");
-			write("\n@DATA");
+//			// Patter-space section
+//			write(writeHeader("Pattern-space representation of test set"));
+//
+//			// Printing ARFF model
+//			write("@RELATION " + dataName + "_PS\n");
+//
+//			int numRules = lad.getRuleManager().numPositiveRules();
+//			for (int i = 0; i < numRules; i++)
+//				write("@ATTRIBUTE P" + (i + 1) + " NUMERIC");
+//
+//			numRules = lad.getRuleManager().numNegativeRules();
+//			for (int i = 0; i < numRules; i++)
+//				write("@ATTRIBUTE N" + (i + 1) + " NUMERIC");
+//
+//			write("@ATTRIBUTE class {0,1}");
+//			write("\n@DATA");
 		}
 	}
 
@@ -146,12 +146,12 @@ public class LADFileManager implements Serializable {
 	 */
 
 	/** Method for writing the cutpoints easily */
-	public static String write(Cutpoints cutpoints) {
+	public static String write(CutpointSet cutpoints) {
 		return write(cutpoints, false);
 	}
 
 	/** Method for writing the cutpoints easily */
-	public static String write(Cutpoints cutpoints, boolean listAll) {
+	public static String write(CutpointSet cutpoints, boolean listAll) {
 		if (cutpoints == null)
 			return "";
 
@@ -166,13 +166,7 @@ public class LADFileManager implements Serializable {
 
 	/** Method for writing the rule manager easily */
 	public static String write(RuleManager ruleManager) {
-		return write(ruleManager, false);
-	}
-
-	/** Method for writing the rule manager easily */
-	public static String write(RuleManager ruleManager, boolean PFS) {
-		return writeSection("Summary of Patterns", PFS ? ruleManager.toPSF()
-				: ruleManager);
+		return writeSection("Summary of Patterns", ruleManager);
 	}
 
 	/** Method to simplify the way we generate headers for the PSF document */

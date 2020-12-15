@@ -2,7 +2,7 @@ package weka.classifiers.rules.lad.core;
 
 import java.io.Serializable;
 
-import weka.classifiers.rules.lad.binarization.Cutpoints;
+import weka.classifiers.rules.lad.binarization.CutpointSet;
 import weka.core.Instance;
 
 /**
@@ -12,7 +12,7 @@ import weka.core.Instance;
  * @author Tiberius Bonates
  * 
  * @since Mar 27, 2014
- * @version 1.0
+ * @version 1.1
  */
 public class BinaryInstance implements Serializable {
 
@@ -21,10 +21,10 @@ public class BinaryInstance implements Serializable {
 
 	/* Variables */
 	private Instance mInstance;
-	private Cutpoints sCutpoints;
+	private CutpointSet sCutpoints;
 
 	/** Main Constructor */
-	public BinaryInstance(Instance instance, Cutpoints cutpoints) {
+	public BinaryInstance(Instance instance, CutpointSet cutpoints) {
 		this.mInstance = instance;
 		this.sCutpoints = cutpoints;
 	}
@@ -36,7 +36,7 @@ public class BinaryInstance implements Serializable {
 	}
 
 	/** GET of binary attribute */
-	public double getValeuAt(int index) {
+	public double getValueAt(int index) {
 		return mInstance.value(sCutpoints.attAt(index));
 	}
 
@@ -48,7 +48,7 @@ public class BinaryInstance implements Serializable {
 		if (isNumeric(index))
 			return getBinAt(index) == bInst.getBinAt(index);
 		else
-			return getValeuAt(index) == bInst.getValeuAt(index);
+			return getValueAt(index) == bInst.getValueAt(index);
 	}
 
 	/** Checks if a specific attribute is numeric */

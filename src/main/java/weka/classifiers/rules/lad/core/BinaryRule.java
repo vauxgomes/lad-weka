@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author Tiberius Bonates
  * 
  * @since Mar 27, 2014
- * @version 1.0
+ * @version 1.1
  */
 public class BinaryRule implements Serializable {
 
@@ -18,20 +18,20 @@ public class BinaryRule implements Serializable {
 	private static final long serialVersionUID = -5108679627773238991L;
 
 	/* Variables */
-	private boolean mClass;
+	private int mLabel;
 	private double mPurity;
 	private ArrayList<Literal> mLiterals;
 
 	/** Main Constructor */
-	public BinaryRule(ArrayList<Literal> literals, boolean aClass, double purity) {
-		this.mClass = aClass;
+	public BinaryRule(ArrayList<Literal> literals, double label, double purity) {
+		this.mLabel = (int) label;
 		this.mPurity = purity;
 		this.mLiterals = new ArrayList<Literal>(literals);
 	}
 
 	/** GET of rule's class */
-	public boolean getRuleClass() {
-		return this.mClass;
+	public int getLabel() {
+		return this.mLabel;
 	}
 
 	/** GET of purity */
