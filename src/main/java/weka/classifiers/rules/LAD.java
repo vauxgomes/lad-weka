@@ -1,12 +1,7 @@
 package weka.classifiers.rules;
 
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
 import java.util.Vector;
-
-import org.apache.commons.compress.utils.Sets;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.rules.lad.binarization.Binarization;
@@ -471,22 +466,6 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 
 	public static void main(String args[]) throws Exception {
 		// Running the classifier from set options
-		// runClassifier(new LAD(), args);
-
-		Random rnd = new Random();
-		HashMap<Double, Set<Integer>> map = new HashMap<Double, Set<Integer>>();
-
-		for (int i = 0; i < 40; i++) {
-			double v = (int) (rnd.nextDouble() * 10);
-
-			int j = rnd.nextInt(100);
-
-			if (!map.containsKey(v))
-				map.put(v, Sets.newHashSet());
-
-			map.get(v).add(j);
-		}
-
-		System.out.println(map);
+		runClassifier(new LAD(), args);
 	}
 }

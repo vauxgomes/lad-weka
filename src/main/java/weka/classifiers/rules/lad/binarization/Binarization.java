@@ -55,7 +55,12 @@ public class Binarization {
 
 			for (int j = 0; j < data.numInstances(); j++) {
 				Instance instance = data.instance(j);
-				double v = instance.value(j);
+
+				// Safety
+				if (instance.isMissing(i))
+					continue;
+
+				double v = instance.value(i);
 
 				if (!map.containsKey(v))
 					map.put(v, Sets.newHashSet());
