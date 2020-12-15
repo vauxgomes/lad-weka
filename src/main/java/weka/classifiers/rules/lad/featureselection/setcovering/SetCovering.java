@@ -1,4 +1,4 @@
-package weka.classifiers.rules.lad.setCovering;
+package weka.classifiers.rules.lad.featureselection.setcovering;
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;

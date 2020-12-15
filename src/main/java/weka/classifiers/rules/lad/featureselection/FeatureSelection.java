@@ -1,4 +1,4 @@
-package weka.classifiers.rules.lad.cutpointSelection;
+package weka.classifiers.rules.lad.featureselection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public abstract class FeatureSelection implements Serializable {
 	 * @param bInst
 	 * @param separationLevel
 	 */
-	public abstract void findSelectedAtts(final BinaryData bInsts);
+	public abstract void fit(final BinaryData bInsts);
 
 	/** Checks if is there any setting out of boundary of mistakenly setted */
 	public void checkForExceptions() throws Exception {
