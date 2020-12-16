@@ -2,6 +2,7 @@ package weka.classifiers.rules.lad.featureselection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 
 import weka.classifiers.rules.lad.core.BinaryData;
@@ -58,6 +59,8 @@ public abstract class FeatureSelection implements Serializable {
 
 	/** GET selected attributes */
 	public ArrayList<Integer> getSelectedAttArray() {
+		Collections.sort(mSelectedAttArray);
+		
 		return mSelectedAttArray;
 	}
 
