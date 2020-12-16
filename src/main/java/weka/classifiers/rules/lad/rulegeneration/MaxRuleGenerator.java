@@ -81,6 +81,7 @@ public class MaxRuleGenerator extends RuleGenerator {
 				if ((covered.getMergedPurity(literalCoverage, label) >= purity) || ((safetyMode)
 						&& (Math.abs(literalCoverage.getPurity(label) - covered.getPurity(label)) < 1.0E4))) {
 
+					// Try to increase purity of current rule 
 					if (covered.getMergedPurity(literalCoverage, label) >= purity) {
 						purity = Math.min(1, purity + (1 - purity) / 10);
 					}
