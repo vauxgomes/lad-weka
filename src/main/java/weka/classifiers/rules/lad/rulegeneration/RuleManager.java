@@ -99,8 +99,15 @@ public class RuleManager implements Serializable {
 			}
 		}
 
-		for (NumericalRule r : mRules)
+		ArrayList<NumericalRule> weightless = new ArrayList<NumericalRule>();
+		for (NumericalRule r : mRules) {
 			r.setWeight(r.getWeight() / weights.get(r.getLabel()));
+
+			if (r.getWeight() == 0)
+				weightless.add(r);
+		}
+
+		mRules.removeAll(weightless);
 	}
 
 	/** Method similar to {@link AbstractClassifier}.distributionForInstance */
@@ -112,7 +119,7 @@ public class RuleManager implements Serializable {
 			if (r.isCovering(instance))
 				distribution[r.getLabel()] += r.getWeight();
 
-		//
+		// Test whether all values are equal
 		double value = distribution[0];
 		for (int i = 0; i < distribution.length; i++)
 			if (distribution[i] != value)
