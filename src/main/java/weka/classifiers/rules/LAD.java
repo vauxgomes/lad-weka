@@ -11,7 +11,7 @@ import weka.classifiers.rules.lad.core.BinaryRule;
 import weka.classifiers.rules.lad.core.NumericalRule;
 import weka.classifiers.rules.lad.featureselection.FeatureSelection;
 import weka.classifiers.rules.lad.featureselection.IteratedSampling;
-import weka.classifiers.rules.lad.rulegeneration.RandomRuleGenerator;
+import weka.classifiers.rules.lad.rulegeneration.MaxRuleGenerator;
 import weka.classifiers.rules.lad.rulegeneration.RuleGenerator;
 import weka.classifiers.rules.lad.rulegeneration.RuleManager;
 import weka.classifiers.rules.lad.util.LADFileManager;
@@ -84,7 +84,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	private double mMinimumPurity = 0.85;
 
 	private FeatureSelection mFeatureSelection = new IteratedSampling();
-	private RuleGenerator mRuleGenerator = new RandomRuleGenerator();
+	private RuleGenerator mRuleGenerator = new MaxRuleGenerator();
 
 	/* Variables */
 	private CutpointSet mCutpoints = null;
@@ -154,6 +154,10 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 				mRuleManager.add(new NumericalRule(rule, mCutpoints));
 
 			mRuleManager.adjustRulesWeight(data);
+			
+			// LADFileManager mFileManager = new LADFileManager(data.relationName(), true);
+			// mFileManager.write(this, data.relationName());
+			// mFileManager.close();
 		}
 	}
 

@@ -1,6 +1,7 @@
 package weka.classifiers.rules.lad.binarization;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -70,7 +71,8 @@ public class Binarization {
 
 			// Cut point transitions
 			ArrayList<Double> keys = new ArrayList<Double>(map.keySet());
-
+			Collections.sort(keys);
+			
 			// Search
 			double v = keys.get(0);
 			for (int k = 1; k < keys.size(); k++) {
@@ -86,6 +88,7 @@ public class Binarization {
 			}
 		}
 
+		cutpoints.sort();
 		return cutpoints;
 	}
 

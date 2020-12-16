@@ -31,8 +31,7 @@ public class BinaryInstance implements Serializable {
 
 	/** GET of binary attribute */
 	public boolean getBinAt(int index) {
-		return sCutpoints.valueAt(index) <= mInstance.value(sCutpoints
-				.attAt(index));
+		return sCutpoints.valueAt(index) <= mInstance.value(sCutpoints.attAt(index));
 	}
 
 	/** GET of binary attribute */
@@ -42,13 +41,17 @@ public class BinaryInstance implements Serializable {
 
 	/** Compares two attributes */
 	public boolean compareAtt(int index, BinaryInstance bInst) {
-		if (isMissingAttribute(index) || bInst.isMissingAttribute(index))
-			return false;
+		try {
+			if (isMissingAttribute(index) || bInst.isMissingAttribute(index))
+				return false;
 
-		if (isNumeric(index))
-			return getBinAt(index) == bInst.getBinAt(index);
-		else
-			return getValueAt(index) == bInst.getValueAt(index);
+			if (isNumeric(index))
+				return getBinAt(index) == bInst.getBinAt(index);
+			else
+				return getValueAt(index) == bInst.getValueAt(index);
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 	/** Checks if a specific attribute is numeric */

@@ -36,13 +36,13 @@ public class GreedySetCover extends FeatureSelection {
 
 		// Checking separation level
 		if (mSeparationLevel <= 0) {
-			for (int i = 0; i < bInsts.numAttributes(); i++)
+			for (int i = 0; i < bInsts.numCutpoints(); i++)
 				this.mSelectedAttArray.add(i);
 
 			return;
 		}
 
-		int numSets = bInsts.numAttributes();
+		int numSets = bInsts.numCutpoints();
 
 		// Auxiliary variable
 		ArrayList<Integer> array = new ArrayList<Integer>(numSets);
@@ -54,7 +54,7 @@ public class GreedySetCover extends FeatureSelection {
 		for (int i = 0; i < bInsts.numInstances(); i++) {
 			BinaryInstance A = bInsts.getInstance(i);
 			
-			for (int j = i + 1; i < bInsts.numInstances(); j++) {
+			for (int j = i + 1; j < bInsts.numInstances(); j++) {
 				BinaryInstance B = bInsts.getInstance(j);
 				
 				// It must be different classes labels

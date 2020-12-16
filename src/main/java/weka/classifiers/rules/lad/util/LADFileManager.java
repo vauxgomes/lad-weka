@@ -116,6 +116,11 @@ public class LADFileManager implements Serializable {
 			// Cutpoints
 			lad.getCutpoints().sort();
 			write(write(lad.getCutpoints(), true));
+			
+			// Selected
+			write(" Features Selected:");
+			for (Integer i : lad.getFeatureSelection().getSelectedAttArray())
+				write(String.format(" ~ %d", i));
 
 			// Rules
 			write(write(lad.getRuleManager()));

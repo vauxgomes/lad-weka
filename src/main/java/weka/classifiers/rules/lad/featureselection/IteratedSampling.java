@@ -43,14 +43,14 @@ public class IteratedSampling extends FeatureSelection {
 
 		// Checking separation level
 		if (mSeparationLevel <= 0) {
-			for (int i = 0; i < data.numAttributes(); i++)
+			for (int i = 0; i < data.numCutpoints(); i++)
 				mSelectedAttArray.add(i);
 
 			return;
 		}
 
 		// Boundaries
-		int numAttributes = (int) (data.numAttributes() * mSampleSize);
+		int numAttributes = (int) (data.numCutpoints() * mSampleSize);
 		int numInstances = (int) (data.numInstances() * mSampleSize);
 
 		//
@@ -133,7 +133,7 @@ public class IteratedSampling extends FeatureSelection {
 		Collections.sort(persistences_);
 
 		// Selecting k cutpoints,
-		int k = (mSolutionSize > data.numAttributes()) ? data.numAttributes() : mSolutionSize;
+		int k = (mSolutionSize > data.numCutpoints()) ? data.numCutpoints() : mSolutionSize;
 
 		for (Persistence p : persistences_.subList(0, k))
 			mSelectedAttArray.add(p.id);

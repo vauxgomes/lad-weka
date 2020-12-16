@@ -131,6 +131,12 @@ public class RuleManager implements Serializable {
 
 		for (Integer i : mLabels.keySet()) {
 			s += String.format(" # Pattern class %s: %d\n", mLabels.get(i), mCounts.get(i));
+
+			for (NumericalRule r : mRules)
+				if (r.getLabel() == i)
+					s += String.format("%s\n", r.toString());
+
+			s += "\n\n";
 		}
 
 		return s;

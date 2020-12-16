@@ -27,8 +27,7 @@ public class BinaryData implements Serializable {
 	private ArrayList<BinaryInstance> mInstances;
 	private ArrayList<Attribute> mAttributes;
 	private HashMap<Double, Integer> mCounts;
-
-	private int mNumAttributes;
+	private CutpointSet mCutpoints;
 
 	/** Main Constructor */
 	public BinaryData(Instances data, CutpointSet cutpoints) {
@@ -40,7 +39,7 @@ public class BinaryData implements Serializable {
 		for (int i = 0; i < data.numAttributes(); i++)
 			mAttributes.add(data.attribute(i));
 		
-		this.mNumAttributes = cutpoints.numCutpoints();
+		mCutpoints = cutpoints;
 	}
 
 	/** Basic Constructor */
@@ -48,7 +47,6 @@ public class BinaryData implements Serializable {
 		mInstances = new ArrayList<BinaryInstance>();
 		mCounts = new HashMap<Double, Integer>();
 		mAttributes = new ArrayList<Attribute>();
-		mNumAttributes = 0;
 
 		for (int i = 0; i < numLabels; i++)
 			mCounts.put((double) i, 0);
@@ -59,8 +57,7 @@ public class BinaryData implements Serializable {
 		mInstances = new ArrayList<BinaryInstance>(data.mInstances);
 		mAttributes = new ArrayList<Attribute>(data.mAttributes);
 		mCounts = new HashMap<Double, Integer>(data.mCounts);
-
-		mNumAttributes = data.mNumAttributes;
+		mCutpoints = data.mCutpoints;
 	}
 
 	/** Adds an instance */
@@ -103,7 +100,12 @@ public class BinaryData implements Serializable {
 
 	/** GET of number of attributes */
 	public int numAttributes() {
-		return mNumAttributes;
+		return mAttributes.size();
+	}
+	
+	/** GET of number of cut points */
+	public int numCutpoints() {
+		return mCutpoints.numCutpoints();
 	}
 
 	/** GET of number of class labels */
@@ -111,9 +113,9 @@ public class BinaryData implements Serializable {
 		return mCounts.size();
 	}
 
-	/** Check if attribute is Numeric */
+	/** GET of an attribute */
 	public Attribute getAttribute(int index) {
-		return mAttributes.get(index);
+		return mAttributes.get(mCutpoints.attAt(index));
 	}
 
 	/** Stats: Purity */

@@ -58,6 +58,7 @@ public class MaxRuleGenerator extends RuleGenerator {
 
 		// Enabling Safety Mode
 		boolean safetyMode = covered.getPurity(label) < mMinimumPurity; // Basically always true
+		double purity = mMinimumPurity;
 
 		// Maximization
 		while (rule.size() > 0) {
@@ -77,8 +78,12 @@ public class MaxRuleGenerator extends RuleGenerator {
 				BinaryData literalCoverage = getRuleCoverage(uncovered, rule, label);
 
 				// Testing
-				if ((covered.getMergedPurity(literalCoverage, label) >= mMinimumPurity) || ((safetyMode)
+				if ((covered.getMergedPurity(literalCoverage, label) >= purity) || ((safetyMode)
 						&& (Math.abs(literalCoverage.getPurity(label) - covered.getPurity(label)) < 1.0E4))) {
+
+					if (covered.getMergedPurity(literalCoverage, label) >= purity) {
+						purity = Math.min(1, purity + (1 - purity) / 10);
+					}
 
 					// Calculating discrepancy
 					double literalDiscrepancy = discrepancy(uncovered, rule, label);

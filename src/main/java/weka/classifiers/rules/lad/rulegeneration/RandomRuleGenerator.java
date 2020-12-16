@@ -35,7 +35,7 @@ public class RandomRuleGenerator extends RuleGenerator {
 	private int mRandomSeed = 1;
 	private int mNumRandomFeatures = 10;
 	private double mMinRelativeCoverageOwnClass = 0.01;
-	private int[] mAttributes; // TRUE if Binary Attribute / FALSE if nominal
+	private int[] mBinaryAttributes; // TRUE if Binary Attribute / FALSE if nominal
 
 	/* Variables */
 	private Random mRandomObject;
@@ -50,15 +50,17 @@ public class RandomRuleGenerator extends RuleGenerator {
 		mData = data;
 		mRandomObject.setSeed(mRandomSeed);
 
-		mAttributes = new int[data.numAttributes()];
-		for (int i = 0; i < mAttributes.length; i++) {
+		mBinaryAttributes = new int[data.numCutpoints()];
+		int i = 0;
+
+		for (i = 0; i < mBinaryAttributes.length; i++) {
 			if (data.getAttribute(i).isNumeric())
-				mAttributes[i] = NUMERIC;
+				mBinaryAttributes[i] = NUMERIC;
 			else
-				mAttributes[i] = data.getAttribute(i).numValues();
+				mBinaryAttributes[i] = data.getAttribute(i).numValues();
 		}
 
-		for (int i = 0; i < this.mNumRules; i++)
+		for (i = 0; i < this.mNumRules; i++)
 			for (int j = 0; j < data.numClassLabels(); j++) {
 				expand(j);
 			}
@@ -67,8 +69,8 @@ public class RandomRuleGenerator extends RuleGenerator {
 	/** Method for building decision rules */
 	private void expand(final double label) {
 		// Indexes
-		ArrayList<Integer> indexes = new ArrayList<Integer>(mAttributes.length);
-		for (int i = 0; i < mAttributes.length; i++)
+		ArrayList<Integer> indexes = new ArrayList<Integer>(mBinaryAttributes.length);
+		for (int i = 0; i < mBinaryAttributes.length; i++)
 			indexes.add(i);
 
 		Collections.shuffle(indexes, mRandomObject);
@@ -79,10 +81,10 @@ public class RandomRuleGenerator extends RuleGenerator {
 
 		// Random Rule
 		for (Integer i : indexes.subList(0, Math.min(indexes.size(), mNumRandomFeatures))) {
-			if (mAttributes[i] == NUMERIC)
+			if (mBinaryAttributes[i] == NUMERIC)
 				literals.add(new Literal(i, mRandomObject.nextBoolean()));
 			else
-				literals.add(new Literal(i, mRandomObject.nextInt(mAttributes[i])));
+				literals.add(new Literal(i, mRandomObject.nextInt(mBinaryAttributes[i])));
 		}
 
 		// Coverage: Considering full coverage of the empty rule
