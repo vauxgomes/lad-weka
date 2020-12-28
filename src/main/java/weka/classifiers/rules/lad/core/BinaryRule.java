@@ -43,10 +43,24 @@ public class BinaryRule implements Serializable {
 	public ArrayList<Literal> getLiterais() {
 		return new ArrayList<Literal>(this.mLiterals);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		BinaryRule rule = (BinaryRule) obj;
+		
+		if (mLiterals.size() != rule.mLiterals.size())
+			return false;
+		
+		for (Literal l : mLiterals)
+			if (!rule.mLiterals.contains(l))
+				return false;
+		
+		return true;
+	}
 
 	@Override
 	public String toString() {
-		String s = new String();
+		String s = mPurity + ": ";
 		for (Literal l : this.mLiterals)
 			s += l;
 		return s;

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import weka.classifiers.rules.lad.core.BinaryData;
+import weka.classifiers.rules.lad.featureselection.setcovering.SetCovering;
 
 /**
  * Class FeatureSelection
@@ -26,6 +27,8 @@ public abstract class FeatureSelection implements Serializable {
 
 	/* Variables */
 	protected ArrayList<Integer> mSelectedAttArray;
+	
+	public SetCovering sc;
 
 	/** Constructor */
 	public FeatureSelection() {
@@ -38,7 +41,7 @@ public abstract class FeatureSelection implements Serializable {
 	 * @param bInst
 	 * @param separationLevel
 	 */
-	public abstract void fit(final BinaryData bInsts);
+	public abstract void fit(final BinaryData data);
 
 	/** Checks if is there any setting out of boundary of mistakenly setted */
 	public void checkForExceptions() throws Exception {

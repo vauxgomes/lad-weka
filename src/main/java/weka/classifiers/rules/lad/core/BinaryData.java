@@ -38,7 +38,7 @@ public class BinaryData implements Serializable {
 
 		for (int i = 0; i < data.numAttributes(); i++)
 			mAttributes.add(data.attribute(i));
-		
+
 		mCutpoints = cutpoints;
 	}
 
@@ -60,6 +60,11 @@ public class BinaryData implements Serializable {
 		mCutpoints = data.mCutpoints;
 	}
 
+	/** GET of cutpoints */
+	public CutpointSet getCutpoints() {
+		return mCutpoints;
+	}
+
 	/** Adds an instance */
 	public void add(BinaryInstance instance) {
 		if (this.mInstances.add(instance))
@@ -77,10 +82,10 @@ public class BinaryData implements Serializable {
 		if (mInstances.remove(instance))
 			mCounts.put(instance.instanceClass(), mCounts.get(instance.instanceClass()) - 1);
 	}
-	
+
 	public void remove(BinaryData data) {
 		for (BinaryInstance instance : data.mInstances)
-			remove(instance);		
+			remove(instance);
 	}
 
 	/** GET of a specific instance. */
@@ -102,7 +107,7 @@ public class BinaryData implements Serializable {
 	public int numAttributes() {
 		return mAttributes.size();
 	}
-	
+
 	/** GET of number of cut points */
 	public int numCutpoints() {
 		return mCutpoints.numCutpoints();
@@ -125,26 +130,30 @@ public class BinaryData implements Serializable {
 
 	/** Stats: Merged purity */
 	public double getMergedPurity(BinaryData data, double label) {
+		if (data == null)
+			return getPurity(label);
+
 		return (mInstances.size() + data.mInstances.size()) == 0 ? 0
-				: (mCounts.get(label) + data.mCounts.get(label)) / (double) (mInstances.size() + data.mInstances.size());
+				: (mCounts.get(label) + data.mCounts.get(label))
+						/ (double) (mInstances.size() + data.mInstances.size());
 	}
 
 	/** Stats: Coverage */
 	public int getCoverage(double label) {
 		return mCounts.get(label);
 	}
-	
+
 	public double getMergedCoverage(BinaryData data, double label) {
 		return getCoverage(label) + data.getCoverage(label);
 	}
-	
+
 	@Override
 	public String toString() {
 		String s = String.format("Covered: %d\n", mInstances.size());
 		for (int i = 0; i < mCounts.size(); i++) {
-			s+= String.format("[%d] (%f, %d)\n", i, getPurity(i), getCoverage(i));
+			s += String.format("[%d] (%f, %d)\n", i, getPurity(i), getCoverage(i));
 		}
-		
-		return s; 
+
+		return s;
 	}
 }

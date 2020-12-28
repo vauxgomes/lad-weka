@@ -31,39 +31,39 @@ public class GreedySetCover extends FeatureSelection {
 	}
 
 	/** Method to find selected attributes */
-	public void fit(final BinaryData bInsts) {
+	public void fit(final BinaryData data) {
 		this.mSelectedAttArray = new ArrayList<Integer>();
 
 		// Checking separation level
 		if (mSeparationLevel <= 0) {
-			for (int i = 0; i < bInsts.numCutpoints(); i++)
+			for (int i = 0; i < data.numCutpoints(); i++)
 				this.mSelectedAttArray.add(i);
 
 			return;
 		}
 
-		int numSets = bInsts.numCutpoints();
+		int numSets = data.numCutpoints();
 
 		// Auxiliary variable
 		ArrayList<Integer> array = new ArrayList<Integer>(numSets);
 
 		// Set Covering instance (Chvátal's Heuristic)
-		SetCovering sc = new SetCovering(numSets);
+		sc = new SetCovering(numSets);
 
 		// Building Set Covering problem
-		for (int i = 0; i < bInsts.numInstances(); i++) {
-			BinaryInstance A = bInsts.getInstance(i);
-			
-			for (int j = i + 1; j < bInsts.numInstances(); j++) {
-				BinaryInstance B = bInsts.getInstance(j);
-				
+		for (int i = 0; i < data.numInstances(); i++) {
+			BinaryInstance A = data.getInstance(i);
+
+			for (int j = i + 1; j < data.numInstances(); j++) {
+				BinaryInstance B = data.getInstance(j);
+
 				// It must be different classes labels
 				if (A.instanceClass() == B.instanceClass())
 					continue;
-				
+
 				// Reseting array
 				array.clear();
-				
+
 				// Populating array of cutpoints indices
 				for (int c = 0; c < numSets; c++)
 					if (!A.compareAtt(c, B))

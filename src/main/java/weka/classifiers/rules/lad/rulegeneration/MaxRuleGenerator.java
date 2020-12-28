@@ -50,11 +50,11 @@ public class MaxRuleGenerator extends RuleGenerator {
 		}
 
 		// Coverage
-		BinaryData covered = new BinaryData(mData.numClassLabels());
+		BinaryData covered = getRuleCoverage(mData, rule, label);
 		BinaryData uncovered = new BinaryData(mData);
 
-		covered.add(instance);
-		uncovered.remove(instance);
+		for (BinaryInstance i : covered.getInstances())
+			uncovered.remove(i);
 
 		// Enabling Safety Mode
 		boolean safetyMode = covered.getPurity(label) < mMinimumPurity; // Basically always true
@@ -78,13 +78,14 @@ public class MaxRuleGenerator extends RuleGenerator {
 				BinaryData literalCoverage = getRuleCoverage(uncovered, rule, label);
 
 				// Testing
-				if ((covered.getMergedPurity(literalCoverage, label) >= purity) || ((safetyMode)
-						&& (Math.abs(literalCoverage.getPurity(label) - covered.getPurity(label)) < 1.0E4))) {
+				if ((covered.getMergedPurity(literalCoverage, label) >= purity)
+						|| ((safetyMode) && (Math.abs(covered.getMergedPurity(literalCoverage, label)
+								- covered.getMergedPurity(bestCoverage, label)) < 1.0E4))) {
 
-					// Try to increase purity of current rule 
-					if (covered.getMergedPurity(literalCoverage, label) >= purity) {
-						purity = Math.min(1, purity + (1 - purity) / 10);
-					}
+//					// Try to increase purity of the current rule
+//					if (covered.getMergedPurity(literalCoverage, label) >= purity) {
+//						purity = Math.min(1, purity + (1 - purity) / 10);
+//					}
 
 					// Calculating discrepancy
 					double literalDiscrepancy = discrepancy(uncovered, rule, label);
@@ -95,9 +96,11 @@ public class MaxRuleGenerator extends RuleGenerator {
 									.getMergedCoverage(bestCoverage, label)
 							|| (covered.getMergedCoverage(literalCoverage, label) == covered
 									.getMergedCoverage(bestCoverage, label) && literalDiscrepancy < bestDiscrepancy)) {
+
 						bestLiteral = literal;
 						bestCoverage = literalCoverage;
 						bestDiscrepancy = literalDiscrepancy;
+
 					}
 				}
 
@@ -109,8 +112,8 @@ public class MaxRuleGenerator extends RuleGenerator {
 			if (bestLiteral == null) {
 				break;
 			} else {
-				covered.add(bestCoverage);
 				rule.remove(bestLiteral);
+				covered.add(bestCoverage);
 
 				for (BinaryInstance inst : bestCoverage.getInstances())
 					uncovered.remove(inst);
@@ -118,7 +121,9 @@ public class MaxRuleGenerator extends RuleGenerator {
 			}
 		}
 
-		addRule(new BinaryRule(rule, label, covered.getPurity(label)));
+		if (rule.size() > 0) {
+			addRule(new BinaryRule(rule, label, covered.getPurity(label)));
+		}
 	}
 
 	/** Makes the split using a list of literals */
@@ -153,13 +158,11 @@ public class MaxRuleGenerator extends RuleGenerator {
 		double sameClassDistance = 0.0;
 		double otherClassDistance = 0.0;
 
-		for (BinaryInstance instance : data.getInstances())
+		for (BinaryInstance instance : data.getInstances()) {
 			for (Literal literal : rule)
 				if (instance.isMissingAttribute(literal.getAtt())) {
 					if (instance.instanceClass() == label)
 						sameClassDistance += 1;
-					else
-						otherClassDistance += 1;
 
 				} else if (!literal.isIn(instance)) {
 					if (instance.instanceClass() == label)
@@ -168,7 +171,15 @@ public class MaxRuleGenerator extends RuleGenerator {
 						otherClassDistance += 1;
 				}
 
-		return sameClassDistance / otherClassDistance;
+		}
+
+		return (sameClassDistance / (1 + data.getCoverage(label)))
+				/ (otherClassDistance / (1 + data.numInstances() - data.getCoverage(label)));
+	}
+
+	@Override
+	public String toString() {
+		return getRules().toString();
 	}
 
 	/*

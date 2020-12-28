@@ -81,6 +81,15 @@ public class BinaryInstance implements Serializable {
 
 	@Override
 	public String toString() {
-		return mInstance.toString();
+		String output = "";
+
+		for (int i = 0; i < numAttributes(); i++) {
+			if (isNumeric(i))
+				output += getBinAt(i) + " ";
+			else
+				output += (int) getValueAt(i) + " ";
+		}
+
+		return output;
 	}
 }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
+import weka.core.Attribute;
+
 /**
  * Class Cutpoints
  * 
@@ -12,7 +14,7 @@ import java.util.Vector;
  * @author Tiberius Bonates
  * 
  * @since Mar 27, 2014
- * @version 1.0
+ * @version 1.1
  */
 public class CutpointSet implements Serializable {
 
@@ -21,10 +23,17 @@ public class CutpointSet implements Serializable {
 
 	/* Variables */
 	private Vector<Cutpoint> mCutpoints;
+	private ArrayList<Attribute> mAttributes;
 
 	/** Main Constructor */
 	public CutpointSet() {
+		this.mAttributes = new ArrayList<Attribute>();
 		this.mCutpoints = new Vector<Cutpoint>();
+	}
+
+	/** Adds a new attribute */
+	public void addAttribute(Attribute att) {
+		this.mAttributes.add(att);
 	}
 
 	/** Adds a new cutpoint */
@@ -37,7 +46,7 @@ public class CutpointSet implements Serializable {
 		Vector<Cutpoint> newList = new Vector<Cutpoint>();
 
 		for (Integer index : indices)
-			newList.add(new Cutpoint(attAt(index), valueAt(index)));
+			newList.add(mCutpoints.get(index));
 
 		newList.trimToSize();
 		this.mCutpoints = newList;
@@ -45,27 +54,27 @@ public class CutpointSet implements Serializable {
 
 	/** GET of a mapped attribute index */
 	public int attAt(int index) {
-		int caracteristica = -1;
-
-		if ((index >= 0) && (index < this.numCutpoints()))
-			caracteristica = this.mCutpoints.get(index).mAtt;
-		else
-			System.err.println("Call to attAt() before data is sorted.");
-
-		return caracteristica;
+		return this.mCutpoints.get(index).mAtt;
 	}
 
 	/** GET of a mapped attribute value */
 	public double valueAt(int index) {
-		double value = -1.0;
+		return this.mCutpoints.get(index).mValue;
+	}
 
-		if ((index >= 0) && (index < this.numCutpoints()))
-			value = this.mCutpoints.get(index).mValue;
-		else
-			System.err.println("Call to valueAt() with an invalid index: "
-					+ index + ".");
+	/** GET of a mapped attribute value */
+	public String valueAt(int index, int valIndex) {
+		return mAttributes.get(mCutpoints.get(index).mAtt).value(valIndex);
+	}
 
-		return value;
+	/** GET of a mapped attribute name */
+	public String nameAt(int index) {
+		return this.mCutpoints.get(index).mName;
+	}
+
+	/** GET isNumeric of a mapped attribute index */
+	public boolean isNumeric(int index) {
+		return mAttributes.get(mCutpoints.get(index).mAtt).isNumeric();
 	}
 
 	/** GET of the number of cutpoints */
@@ -81,7 +90,7 @@ public class CutpointSet implements Serializable {
 	@Override
 	public String toString() {
 		String s = String.format("Cutpoints: %d\n", mCutpoints.size());
-		
+
 		for (int i = 0; i < this.mCutpoints.size(); i++)
 			s += this.mCutpoints.get(i).toString() + "\n";
 
@@ -105,11 +114,17 @@ public class CutpointSet implements Serializable {
 		/* Variables */
 		private final int mAtt;
 		private final double mValue;
+		private final String mName;
 
 		/** Main Constructor */
-		public Cutpoint(int att, double aCorte) {
+		public Cutpoint(int att, double value) {
 			this.mAtt = att;
-			this.mValue = aCorte;
+			this.mValue = value;
+
+			if (mAttributes.size() > 0)
+				this.mName = mAttributes.get(mAtt).name();
+			else
+				this.mName = "Att";
 		}
 
 		@Override
@@ -132,7 +147,7 @@ public class CutpointSet implements Serializable {
 
 		@Override
 		public String toString() {
-			return " [ att" + mAtt + " : " + mValue + " ]";
+			return String.format(" [ %s : %f ]", mName, mValue);
 		}
 	}
 }

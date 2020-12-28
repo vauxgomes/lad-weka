@@ -34,11 +34,13 @@ public class Binarization {
 	public CutpointSet fit(Instances data) throws Exception {
 		//
 		CutpointSet cutpoints = new CutpointSet();
-
+		Attribute att = null;
+		
 		// For each attribute, sort values and find transitions
 		for (int i = 0; i < data.numAttributes(); i++) {
 
-			Attribute att = data.attribute(i);
+			att = data.attribute(i);
+			cutpoints.addAttribute(att);
 
 			// CLASS ATTRIBUTE
 			if (att == data.classAttribute())
@@ -88,7 +90,7 @@ public class Binarization {
 			}
 		}
 
-		cutpoints.sort();
+		cutpoints.sort();		
 		return cutpoints;
 	}
 

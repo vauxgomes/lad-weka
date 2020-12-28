@@ -1,5 +1,6 @@
 package weka.classifiers.rules;
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -7,10 +8,8 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.rules.lad.binarization.Binarization;
 import weka.classifiers.rules.lad.binarization.CutpointSet;
 import weka.classifiers.rules.lad.core.BinaryData;
-import weka.classifiers.rules.lad.core.BinaryRule;
-import weka.classifiers.rules.lad.core.NumericalRule;
 import weka.classifiers.rules.lad.featureselection.FeatureSelection;
-import weka.classifiers.rules.lad.featureselection.IteratedSampling;
+import weka.classifiers.rules.lad.featureselection.GreedySetCover;
 import weka.classifiers.rules.lad.rulegeneration.MaxRuleGenerator;
 import weka.classifiers.rules.lad.rulegeneration.RuleGenerator;
 import weka.classifiers.rules.lad.rulegeneration.RuleManager;
@@ -83,7 +82,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	private double mCutpointTolerance = 0.0;
 	private double mMinimumPurity = 0.85;
 
-	private FeatureSelection mFeatureSelection = new IteratedSampling();
+	private FeatureSelection mFeatureSelection = new GreedySetCover();
 	private RuleGenerator mRuleGenerator = new MaxRuleGenerator();
 
 	/* Variables */
@@ -115,6 +114,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 		 */
 
 		if (mFeatureSelection.getSeparationLevel() > 0) {
+			// Feature Selection
 			mFeatureSelection.checkForExceptions();
 
 			try {
@@ -131,7 +131,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 			}
 		}
 
-		// Generating rules
+		// Rule Building
 		this.mRuleGenerator.setMinimumPurity(mMinimumPurity);
 		this.mRuleGenerator.checkForExceptions();
 
@@ -146,19 +146,10 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 		} catch (Exception e) {
 			// Just in case we change something and it goes wrong ;)
 			e.printStackTrace();
-		} finally {
-			// Setting Rules
-			this.mRuleManager = new RuleManager(data);
-
-			for (BinaryRule rule : mRuleGenerator.getRules())
-				mRuleManager.add(new NumericalRule(rule, mCutpoints));
-
-			mRuleManager.adjustRulesWeight(data);
-			
-			// LADFileManager mFileManager = new LADFileManager(data.relationName(), true);
-			// mFileManager.write(this, data.relationName());
-			// mFileManager.close();
 		}
+
+		// Setting Rules
+		this.mRuleManager = new RuleManager(data, mRuleGenerator.getRules(), mCutpoints);
 	}
 
 	@Override
@@ -471,5 +462,32 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 	public static void main(String args[]) throws Exception {
 		// Running the classifier from set options
 		runClassifier(new LAD(), args);
+	}
+
+	@SuppressWarnings("unused")
+	private static Instances loadData(String path) throws IOException {
+		java.io.File file = null;
+		javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+
+		if (path.length() == 0) {
+			fc.showOpenDialog(null);
+			file = fc.getSelectedFile();
+		} else {
+			file = new java.io.File(path);
+		}
+
+		java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
+
+		weka.core.converters.ArffLoader.ArffReader arff;
+		arff = new weka.core.converters.ArffLoader.ArffReader(reader, 1000);
+
+		Instances data = arff.getStructure();
+		data.setClassIndex(data.numAttributes() - 1);
+
+		Instance instance;
+		while ((instance = arff.readInstance(data)) != null)
+			data.add(instance);
+
+		return data;
 	}
 }

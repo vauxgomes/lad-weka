@@ -63,6 +63,12 @@ public class Literal implements Serializable {
 	public boolean getSignal() {
 		return mValue == TRUE;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Literal l = (Literal) obj;
+		return mAtt == l.mAtt && mValue == l.mValue;
+	}
 
 	@Override
 	public String toString() {
