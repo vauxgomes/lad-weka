@@ -27,7 +27,7 @@ public abstract class FeatureSelection implements Serializable {
 
 	/* Variables */
 	protected ArrayList<Integer> mSelectedAttArray;
-	
+
 	public SetCovering sc;
 
 	/** Constructor */
@@ -46,8 +46,7 @@ public abstract class FeatureSelection implements Serializable {
 	/** Checks if is there any setting out of boundary of mistakenly setted */
 	public void checkForExceptions() throws Exception {
 		if (mSeparationLevel < 0)
-			throw new Exception("Feature Selection: Separation Level "
-					+ "must be greater than or equal to 0.");
+			throw new Exception("Feature Selection: Separation Level " + "must be greater than or equal to 0.");
 	}
 
 	/** GET Separation Level */
@@ -63,23 +62,23 @@ public abstract class FeatureSelection implements Serializable {
 	/** GET selected attributes */
 	public ArrayList<Integer> getSelectedAttArray() {
 		Collections.sort(mSelectedAttArray);
-		
+
 		return mSelectedAttArray;
 	}
 
 	/*
-	 * --------------------------------------------------------------------
+	 * ----------------------------------------------------------------------
 	 * DISPLAY INFORMATIONS & TIP TEXTs
-	 * --------------------------------------------------------------------
+	 * ----------------------------------------------------------------------
 	 */
 
 	/** Feature Selection Tip Text */
 	public abstract String separationLevelTipText();
 
 	/*
-	 * --------------------------------------------------------------------
+	 * ----------------------------------------------------------------------
 	 * OPTIONS METHODS
-	 * --------------------------------------------------------------------
+	 * ----------------------------------------------------------------------
 	 */
 
 	/** Global informations about the Rule Generator */

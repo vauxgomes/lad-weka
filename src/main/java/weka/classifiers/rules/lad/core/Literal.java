@@ -63,7 +63,7 @@ public class Literal implements Serializable {
 	public boolean getSignal() {
 		return mValue == TRUE;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		Literal l = (Literal) obj;

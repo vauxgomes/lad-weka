@@ -35,7 +35,7 @@ public class Binarization {
 		//
 		CutpointSet cutpoints = new CutpointSet();
 		Attribute att = null;
-		
+
 		// For each attribute, sort values and find transitions
 		for (int i = 0; i < data.numAttributes(); i++) {
 
@@ -74,7 +74,7 @@ public class Binarization {
 			// Cut point transitions
 			ArrayList<Double> keys = new ArrayList<Double>(map.keySet());
 			Collections.sort(keys);
-			
+
 			// Search
 			double v = keys.get(0);
 			for (int k = 1; k < keys.size(); k++) {
@@ -90,7 +90,7 @@ public class Binarization {
 			}
 		}
 
-		cutpoints.sort();		
+		cutpoints.sort();
 		return cutpoints;
 	}
 

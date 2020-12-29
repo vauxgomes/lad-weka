@@ -98,12 +98,6 @@ public class MaxRuleGenerator extends RuleGenerator {
 							|| (covered.getMergedCoverage(literalCoverage, label) == covered
 									.getMergedCoverage(bestCoverage, label) && literalDiscrepancy < bestDiscrepancy)) {
 
-//					if (bestCoverage == null
-//							|| covered.getMergedPurity(literalCoverage, label) > covered.getMergedPurity(bestCoverage,
-//									label)
-//							|| (covered.getMergedPurity(literalCoverage, label) == covered.getMergedPurity(bestCoverage,
-//									label) && literalDiscrepancy < bestDiscrepancy)) {
-
 						bestLiteral = literal;
 						bestCoverage = literalCoverage;
 						bestDiscrepancy = literalDiscrepancy;
@@ -121,7 +115,7 @@ public class MaxRuleGenerator extends RuleGenerator {
 			} else {
 				rule.remove(bestLiteral);
 				covered.add(bestCoverage);
-				
+
 				for (BinaryInstance inst : bestCoverage.getInstances())
 					uncovered.remove(inst);
 
@@ -191,7 +185,7 @@ public class MaxRuleGenerator extends RuleGenerator {
 
 	/*
 	 * ----------------------------------------------------------------------
-	 * DYSPLAY INFORMATIONS & TIP TEXTs
+	 * DISPLAY INFORMATIONS & TIP TEXTs
 	 * ----------------------------------------------------------------------
 	 */
 

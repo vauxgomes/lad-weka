@@ -213,13 +213,14 @@ public class NumericalRule implements Serializable {
 
 		@Override
 		public String toString() {
-//			if (mValueName != null)
-//				return String.format("[%s (%d) = %s (%d)]", mAttName, mAtt, mValueName, (int) mValue);
-//
-//			return String.format("[%s (%d) %s %f]", mAttName, mAtt, (mRelation == BIGGER_THAN ? ">" : "<="), mValue);
+			if (mValueName != null)
+				return String.format("[%s = %s]", mAttName, mValueName);
 
-			return String.format("[att%d %s " + mValue + "]", mAtt,
-					(mRelation == BIGGER_THAN ? ">" : (mRelation == LESS_EQUAL_THAN ? "<=" : "=")));
+			return String.format("[%s %s %f]", mAttName, (mRelation == BIGGER_THAN ? ">" : "<="), mValue);
+
+			// Generic version
+			// return String.format("[att%d %s " + mValue + "]", mAtt, (mRelation ==
+			// BIGGER_THAN ? ">" : (mRelation == LESS_EQUAL_THAN ? "<=" : "=")));
 		}
 
 		@Override

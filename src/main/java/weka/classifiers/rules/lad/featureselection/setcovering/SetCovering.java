@@ -62,8 +62,8 @@ public class SetCovering implements Serializable {
 			notCovereds.put(e.mName, e.mName);
 
 		/*
-		 * Step 1. Pre-processing: Find all sets with just one element and add
-		 * it to our solution.
+		 * Step 1. Pre-processing: Find all sets with just one element and add it to our
+		 * solution.
 		 */
 
 		for (Element elemento : this.mElements) {

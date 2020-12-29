@@ -54,7 +54,7 @@ public class BinaryRule implements Serializable {
 		for (Literal l : mLiterals)
 			if (!rule.mLiterals.contains(l))
 				return false;
-		
+
 		return true;
 	}
 

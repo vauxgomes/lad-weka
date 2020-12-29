@@ -58,7 +58,7 @@ public abstract class RuleGenerator implements Serializable {
 		if (rule.getPurity() >= mMinimumPurity)
 			this.mBinaryRules.add(rule);
 	}
-	
+
 	protected boolean contains(BinaryRule rule) {
 		return this.mBinaryRules.contains(rule);
 	}
