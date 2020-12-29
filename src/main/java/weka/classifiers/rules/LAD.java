@@ -182,7 +182,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 
 	/*
 	 * -------------------------------------------------------------------------
-	 * DYSPLAY SETs & GETs
+	 * DISPLAY SETs & GETs
 	 * -------------------------------------------------------------------------
 	 */
 
@@ -228,7 +228,7 @@ public class LAD extends AbstractClassifier implements TechnicalInformationHandl
 
 	/*
 	 * -------------------------------------------------------------------------
-	 * OTHERS DYSPLAY INFORMATIONS & TIP TEXTs
+	 * OTHERS DISPLAY INFORMATIONS & TIP TEXTs
 	 * -------------------------------------------------------------------------
 	 */
 

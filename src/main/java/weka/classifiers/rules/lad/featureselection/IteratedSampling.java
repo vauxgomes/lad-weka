@@ -202,7 +202,7 @@ public class IteratedSampling extends FeatureSelection {
 
 	/*
 	 * -------------------------------------------------------------------- OTHERS
-	 * DYSPLAY INFORMATIONS & TIP TEXTs
+	 * DISPLAY INFORMATIONS & TIP TEXTs
 	 * --------------------------------------------------------------------
 	 */
 

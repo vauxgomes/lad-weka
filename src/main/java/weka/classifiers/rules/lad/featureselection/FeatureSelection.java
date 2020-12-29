@@ -69,7 +69,7 @@ public abstract class FeatureSelection implements Serializable {
 
 	/*
 	 * --------------------------------------------------------------------
-	 * DYSPLAY INFORMATIONS & TIP TEXTs
+	 * DISPLAY INFORMATIONS & TIP TEXTs
 	 * --------------------------------------------------------------------
 	 */
 
