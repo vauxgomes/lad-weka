@@ -1,3 +1,5 @@
+## LADWEKA
+
 ![](img/lad-weka-min.png)
 
 ### About LAD
@@ -17,7 +19,7 @@ The goal of the LAD-WEKA project is to provide a reference implementation of LAD
 
 **Classificação Supervisionada de Dados via Otimização e Funções Booleanas**. Gomes, V.S.D., T. O. Bonates. Anais do II Workshop Técnico-Científico de Computação, p.21-27, Mossoró, RN, Brazil, 2011.
 
-## Download and Execution
+### Download and Execution
 A `jar` file is current placed [here](dist/lad-weka.jar). One may simple execute the downloaded file either by double clicking or using the following command:
 
 ```sh
@@ -37,6 +39,4 @@ $ java -classpath lad-weka.jar weka.classifiers.rules.LAD -help
 ```
 
 ## Contact
-Please, direct any questions, comments, or suggestions to the e-mails provided below:
- - ![](https://lia.ufc.br/~tiberius/lad/img/vmail.png)
- - ![](https://lia.ufc.br/~tiberius/lad/img/tmail.png)
+Please, direct any questions, comments, or suggestions to the issues section.
