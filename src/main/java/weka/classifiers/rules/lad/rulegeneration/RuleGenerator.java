@@ -3,9 +3,11 @@ package weka.classifiers.rules.lad.rulegeneration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import weka.classifiers.rules.lad.core.BinaryData;
 import weka.classifiers.rules.lad.core.BinaryRule;
+import weka.core.Option;
 
 /**
  * Class RuleGenerator
@@ -65,20 +67,31 @@ public abstract class RuleGenerator implements Serializable {
 
 	/*
 	 * ----------------------------------------------------------------------
-	 * OPTIONS METHODS
+	 * DISPLAY INFORMATIONS & TIP TEXTs
 	 * ----------------------------------------------------------------------
 	 */
 
 	/** Global informations about the Rule Generator */
 	public abstract String globalInfo();
 
+	/*
+	 * ----------------------------------------------------------------------
+	 * OPTIONS METHODS
+	 * ----------------------------------------------------------------------
+	 */
+
 	/** GET of the Rule Generator options */
-	public abstract String[] getOptions();
+	public String[] getOptions() {
+		return new String[0];
+	}
 
 	/** SET of the Rule Generator options */
-	public abstract void setOptions(String[] options) throws Exception;
+	public void setOptions(String[] options) throws Exception {
+	}
 
-	/** List of descriptions about the options **/
 	@SuppressWarnings("rawtypes")
-	public abstract Enumeration listOptions();
+	/** List of descriptions about the options **/
+	public Enumeration listOptions() {
+		return new Vector<Option>(0).elements();
+	}
 }

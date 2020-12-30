@@ -1,14 +1,11 @@
 package weka.classifiers.rules.lad.rulegeneration;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
 
 import weka.classifiers.rules.lad.core.BinaryData;
 import weka.classifiers.rules.lad.core.BinaryInstance;
 import weka.classifiers.rules.lad.core.BinaryRule;
 import weka.classifiers.rules.lad.core.Literal;
-import weka.core.Option;
 
 /**
  * Class MaxRuleGenerator (Max pattern rule generator).
@@ -112,7 +109,7 @@ public class MaxRuleGenerator extends RuleGenerator {
 			// Break Conditions
 			if (bestLiteral == null) {
 				break;
-			} else {
+			} else {				
 				rule.remove(bestLiteral);
 				covered.add(bestCoverage);
 
@@ -200,24 +197,5 @@ public class MaxRuleGenerator extends RuleGenerator {
 				+ "(from the main LAD classifier).";
 	}
 
-	/*
-	 * ----------------------------------------------------------------------
-	 * OPTIONS METHODS
-	 * ----------------------------------------------------------------------
-	 */
-
-	@Override
-	public String[] getOptions() {
-		return new String[0];
-	}
-
-	@Override
-	public void setOptions(String[] options) throws Exception {
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Enumeration listOptions() {
-		return new Vector<Option>(0).elements();
-	}
+	
 }
