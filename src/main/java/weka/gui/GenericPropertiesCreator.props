@@ -1,7 +1,7 @@
 # Customises the list of options given by the GenericObjectEditor
 # for various superclasses.
 #
-# Version: $Revision: 14778 $
+# Version: $Revision: 15255 $
 
 # Whether to use the dynamic approach or not (true|false). In case of
 # "false" the old GenericObjectEditor.props file is used:
@@ -216,10 +216,7 @@ weka.core.PartitionGenerator=\
 # List of snowball stemmers.
 #
 # Note: the snowball jar needs to be in the CLASSPATH to make these stemmers
-#       available. See the following links for more information:
-#       http://weka.wikispaces.com/Stemmers
-#       http://snowball.tartarus.org/
-#
+#       available.
 #org.tartarus.snowball.SnowballProgram=\
 # org.tartarus.snowball.ext
 

@@ -8,7 +8,7 @@
 # - full classname has to be provided
 #
 # author:  FracPete (fracpete at waikato dot ac dot nz)
-# version: $Revision: 11916 $
+# version: $Revision: 15707 $
 
 # whether to show the large tooltip with the global info and capabilities
 # in the class tree
@@ -29,7 +29,7 @@ java.io.File[]=weka.gui.GenericArrayEditor
 # core
 weka.core.SelectedTag=weka.gui.SelectedTagEditor
 weka.core.DistanceFunction=weka.gui.GenericObjectEditor
-weka.core.Range=weka.gui.GenericObjectEditor
+weka.core.Range=weka.gui.RangeEditor
 weka.core.Range[]=weka.gui.GenericArrayEditor
 weka.core.converters.Loader=weka.gui.GenericObjectEditor
 weka.core.converters.Saver=weka.gui.GenericObjectEditor
